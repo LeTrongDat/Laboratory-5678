@@ -61,4 +61,9 @@ public interface ServerCommandsHandlerManipulation {
     @CommandAnnotation(name = "exit", usage = "Terminate the program (without saving to a file)")
     void exitProgram(Object... args);
 
+    @CommandAnnotation(name = "sign_up", usage = "Sign up a new account")
+    void signUp(Object... args);
+
+    @CommandAnnotation(name = "log_in", usage = "Log in to the database")
+    void logIn(Object... args);
 }

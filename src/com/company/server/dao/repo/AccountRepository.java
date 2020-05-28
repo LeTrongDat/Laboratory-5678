@@ -1,12 +1,9 @@
 package com.company.server.dao.repo;
 
-import com.company.server.account.Account;
-
-import java.util.Optional;
+import com.company.server.user.User;
 
 public interface AccountRepository {
-    Optional<Account> findAccountByName(String name);
-    Optional<Account> findAccountByNameAndPassword(String name, String password);
-    void save(Account account);
-    void signIn(Account account);
+    User findAccountByName(String name);
+    User findAccountByNameAndPassword(String name, String password);
+    void save(User user);
 }

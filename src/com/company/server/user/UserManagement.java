@@ -1,13 +1,13 @@
-package com.company.server.account;
+package com.company.server.user;
 
 import com.company.server.dao.repo.AccountRepository;
+import com.company.server.io.Logback;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
-public class AccountManagement {
+public class UserManagement {
     AccountRepository repo;
     private String encryptBySHA1(String str) {
         try {
@@ -22,17 +22,20 @@ public class AccountManagement {
             return null;
         }
     }
-    public String signUp(Account account) {
-        Optional<Account> opt = repo.findAccountByName(account.getName());
-        if (opt.isPresent()) return "The username has been taken. Please sign up by another name";
-        account.setPassword(encryptBySHA1(account.getPassword()));
-        repo.save(account);
+    public String signUp(User user) {
+        User opt = repo.findAccountByName(user.getName());
+        if (opt != null) return "The username has been taken. Please sign up by another name";
+        user.setPassword(encryptBySHA1(user.getPassword()));
+        repo.save(user);
         return "Sign up success";
     }
-    public boolean signIn(Account account) {
-        Optional<Account> opt = repo.findAccountByNameAndPassword(account.getName(),
-                                        encryptBySHA1(account.getPassword()));
-        if (opt.isPresent()) return true;
+    public boolean logIn(User user) {
+        User opt = repo.findAccountByNameAndPassword(user.getName(),
+                                        encryptBySHA1(user.getPassword()));
+        if (opt != null) {
+            Logback.logback("Logged in successfully");
+            return true;
+        }
         return false;
     }
 }

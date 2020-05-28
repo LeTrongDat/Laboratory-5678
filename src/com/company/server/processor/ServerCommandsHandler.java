@@ -1,5 +1,6 @@
 package com.company.server.processor;
 
+import com.company.server.user.UserManagement;
 import com.company.server.io.Logback;
 import com.company.server.io.ServerPrinter;
 import com.company.shared.annotations.CommandAnnotation;
@@ -31,12 +32,19 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     private DateTimeFormatter dtf;
     private java.time.ZonedDateTime initializationDate;
     private ServerPrinter resultServerPrinter;
+    private UserManagement userManagement; //
+    private boolean status; //
+
+    public boolean getStatus() {
+        return status;
+    }
 
     public ServerCommandsHandler() {
         this.pq = new PriorityQueue<>();
         this.listCommands = new ArrayList<>();
         this.dtf = DateTimeFormatter.ofPattern("HH:mm, dd MMM yyyy");
         this.initializationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
+        this.status = false;
     }
     public void setResultServerPrinter(ServerPrinter resultServerPrinter) {
         this.resultServerPrinter = resultServerPrinter;
@@ -68,6 +76,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Print list available commands.
      */
+    @Override
     public void printListCommand(Object... args) {
         resultServerPrinter.print("rawPrint",
                 Arrays.stream(ServerCommandsHandlerManipulation.class.getDeclaredMethods())
@@ -79,6 +88,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Get information of collection.
      */
+    @Override
     public void getGeneralInformation(Object... args) {
         resultServerPrinter.print("print", "Type of collection: Priority Queue");
         resultServerPrinter.print("print", "Size of collection: " + pq.size());
@@ -88,6 +98,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Get information of elements in the collection.
      */
+    @Override
     public void getDetailsInformation(Object... args) {
         resultServerPrinter.print("print", pq.toArray());
     }
@@ -103,6 +114,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Add new object from stdin into the collection.
      */
+    @Override
     public void addObject(Object... args) {
         SpaceMarine spaceMarine = (SpaceMarine)args[0];
         spaceMarine.setId(pq.size() + 1);                                   // need fix
@@ -113,6 +125,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Change properties of the object whose id is equal to specified.
      */
+    @Override
     public void update(Object... args) {
         if (pq.isEmpty()) {
             resultServerPrinter.print("print", "The collection is empty.");
@@ -133,6 +146,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Remove the object whose id is equal to specified.
      */
+    @Override
     public void removeById(Object... args) {
         pq.removeIf(sm -> sm.getId().equals((Integer)args[0]));
         resultServerPrinter.print("print", "Removed element.");
@@ -141,6 +155,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Clear the collection.
      */
+    @Override
     public void clear(Object... args) {
         pq.clear();
         resultServerPrinter.print("print", "Cleared collection");
@@ -150,6 +165,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      * Save the collection to csv file.
      * @throws IOException
      */
+    @Override
     public void save(Object... args) throws IOException {
         OpenCSVWriter.printOutput(pq);
         resultServerPrinter.print("print", "Saved collection to file.");
@@ -159,11 +175,13 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      * Execute all commands through file.
      * @throws IllegalArgumentException
      */
+    @Override
     public void executeFile(Object... args) throws IllegalArgumentException { }
 
     /**
      * Terminate program.
      */
+    @Override
     public void exitProgram(Object... args) {
         System.exit(0);
     }
@@ -171,6 +189,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Add new element if it's greater than the maximum element in the collection.
      */
+    @Override
     public void addIfMax(Object... args) throws NullPointerException {
         SpaceMarine sm = (SpaceMarine)args[0];
         Object[] spaceMarines = pq.toArray();
@@ -185,6 +204,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Add new element if it's smaller than the minimum element in the collection.
      */
+    @Override
     public void addIfMin(Object... args) throws NullPointerException {
         SpaceMarine sm = (SpaceMarine)args[0];
         if (pq.isEmpty() || sm.compareTo(pq.peek()) > 0) {
@@ -198,6 +218,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Trace the last 6 commands.
      */
+    @Override
     public void showHistory(Object... args) {
         resultServerPrinter.print("print", listCommands.toArray());
     }
@@ -205,6 +226,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Remove object by its category.
      */
+    @Override
     public void removeByCategory(Object... args) {
         pq.removeIf(x -> x.getCategory().equals(AstartesCategory.valueOf((String)args[0])));
         resultServerPrinter.print("print", "Removed items whose category field value is equal to the specified");
@@ -213,6 +235,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Count the number of elements whose category is greater than received category.
      */
+    @Override
     public void countGreaterThanCategory(Object... args) {
         resultServerPrinter.print("print", "The number of elements is: " + pq.stream()
                         .filter(x -> x.getCategory() != null)
@@ -223,11 +246,26 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     /**
      * Display elements whose melee weapon is greater than the specified.
      */
+    @Override
     public void filterGreaterThanMeleeWeapon(Object... args) {
         resultServerPrinter.print("print", pq.stream()
                         .filter(x -> x.getMeleeWeapon() != null)
                         .filter(x -> x.getMeleeWeapon().ordinal() > MeleeWeapon.valueOf((String) args[0]).ordinal())
                         .map(x -> x.toString())
                         .reduce("", (a, b) -> a + b));
+    }
+
+    /**
+     * Sign up new account
+     */
+    @Override
+    public void signUp(Object... args) {
+    }
+
+    /**
+     * Log into the database.
+     */
+    @Override
+    public void logIn(Object... args) {
     }
 }

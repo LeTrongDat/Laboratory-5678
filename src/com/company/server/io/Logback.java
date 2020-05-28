@@ -11,7 +11,7 @@ public class Logback {
     public synchronized static void logback(String str) {
         DateTimeFormatter dtm = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
-        System.out.print(str + "\n>");
+        System.out.print(str + "\n> ");
         try {
             fileWriter = new FileWriter("logback.txt", true);
             fileWriter.append(dtm.format(now) + ": " + str + '\n');
