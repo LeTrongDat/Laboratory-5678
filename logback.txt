@@ -1,0 +1,34 @@
+14/05/2020 07:16:36: Processing command show...
+14/05/2020 07:16:37: Processing command info...
+14/05/2020 12:19:31: Server is listening on port 1270
+14/05/2020 12:19:31: Waiting for client
+14/05/2020 12:20:38: Server is listening on port 1270
+14/05/2020 12:20:38: Waiting for client
+14/05/2020 12:21:14: Successful connect.
+14/05/2020 12:21:23: Processing command help...
+14/05/2020 12:23:49: Server is listening on port 1270
+14/05/2020 12:23:49: Waiting for client
+14/05/2020 12:24:22: Server is listening on port 1270
+14/05/2020 12:24:22: Waiting for client
+14/05/2020 12:25:56: Server is listening on port 1270
+14/05/2020 12:25:56: Waiting for client
+14/05/2020 12:27:40: Server is listening on port 1270
+14/05/2020 12:27:41: Waiting for client
+14/05/2020 12:29:33: Server is listening on port 1270
+14/05/2020 12:29:33: Waiting for client
+14/05/2020 12:40:07: Server is listening on port 1270
+14/05/2020 12:40:07: Waiting for client
+14/05/2020 12:40:15: Server is listening on port 1270
+14/05/2020 12:40:15: Waiting for client
+14/05/2020 12:40:23: Server is listening on port 1270
+14/05/2020 12:40:23: Waiting for client
+14/05/2020 12:40:51: Server is listening on port 1270
+14/05/2020 12:40:51: Waiting for client
+14/05/2020 12:41:25: Server is listening on port 1270
+14/05/2020 12:41:25: Waiting for client
+14/05/2020 12:41:27: Processing command save...
+14/05/2020 12:41:29: Processing command save...
+14/05/2020 12:42:29: Server is listening on port 1270
+14/05/2020 12:42:29: Waiting for client
+14/05/2020 12:45:00: Server is listening on port 1270
+14/05/2020 12:45:00: Waiting for client

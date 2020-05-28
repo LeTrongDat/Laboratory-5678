@@ -1,0 +1,7 @@
+Name, Coordinates, Health, Astartes Category, Weapon, Melee weapon, Chapter
+Earth, "(15, 16)", 200, null, null, null, "(TWO, 15)"
+Namek, "(20, 30)", 100, SCOUT, null, null, "(ONE, 20)"
+Namek, "(10, 20)", 110, SCOUT, FLAMER, null, "(One, 20)"
+Namek, "(20, 30)", 100, SCOUT, null, null, "(ONE, 20)"
+ABC, "(12, 23)", 2, SCOUT, null, null, "(we, 23)"
+Earth, "(20, 30)", 129, SCOUT, null, null, "(Two, 20)"
