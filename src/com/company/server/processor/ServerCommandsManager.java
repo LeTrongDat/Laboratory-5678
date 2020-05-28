@@ -1,52 +1,38 @@
 package com.company.server.processor;
 
-import com.company.server.dao.reader.csv.OpenCSVReader;
-import com.company.server.io.ServerPrinter;
-import com.company.server.io.ServerResultPrinter;
+import com.company.server.io.Collector;
+import com.company.server.io.MessageCollector;
 import com.company.shared.CommandData;
-import jdk.nashorn.internal.ir.Block;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 
 /**
  * A class for managing all the commands.
  * @author Le Trong Dat
  */
 public class ServerCommandsManager implements Runnable {
-    private BlockingQueue<CommandData> commandDataBlockingQueue;
-    private BlockingQueue<String> stringBlockingQueue;
     private ServerCommandsHandler serverCommandsHandler = new ServerCommandsHandler();
+    private BlockingQueue<CommandData> commandQueue;
+    private BlockingQueue<String> messageQueue;
 
-    public void setCommandDataBlockingQueue(BlockingQueue<CommandData> commandDataBlockingQueue) {
-        this.commandDataBlockingQueue = commandDataBlockingQueue;
+    public ServerCommandsManager(BlockingQueue<CommandData> commandQueue, BlockingQueue<String> messageQueue) {
+        this.commandQueue = commandQueue;
+        this.messageQueue = messageQueue;
     }
 
-    public void setStringBlockingQueue(BlockingQueue<String> stringBlockingQueue) {
-        this.stringBlockingQueue = stringBlockingQueue;
-    }
-
-    public ServerCommandsManager() {
-        OpenCSVReader.getInput(serverCommandsHandler);
-        ServerPrinter resultServerPrinter = new ServerResultPrinter();
-        serverCommandsHandler.setResultServerPrinter(resultServerPrinter);
-    }
-    public ServerPrinter execute(CommandData commandData) throws InvocationTargetException, IllegalAccessException {
-        if (commandData == null) return new ServerResultPrinter();
-        ServerPrinter serverResultPrinter = new ServerResultPrinter();
-        serverCommandsHandler.setResultServerPrinter(serverResultPrinter);
-        serverCommandsHandler.processCommand(commandData);
-        return serverResultPrinter;
+    public void execute() throws InterruptedException, InvocationTargetException, IllegalAccessException {
+        Collector<String> messageCollector = new MessageCollector();
+        serverCommandsHandler.setMessageCollector(messageCollector);
+        serverCommandsHandler.processCommand(commandQueue.take());
+        String message = messageCollector.getCollection();
+        messageQueue.put(message);
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
-                String message = execute(commandDataBlockingQueue.take()).getResult();
-                stringBlockingQueue.put(message);
-            }
+            while (true) execute();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

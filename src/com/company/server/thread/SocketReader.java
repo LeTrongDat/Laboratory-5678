@@ -11,18 +11,19 @@ import java.util.concurrent.BlockingQueue;
 
 public class SocketReader implements Runnable, Readable<CommandData> {
     private Socket socket;
-    private BlockingQueue<CommandData> blockingQueue;
+    private BlockingQueue<CommandData> commandQueue;
 
-    public SocketReader(Socket socket) {
+    public SocketReader(Socket socket, BlockingQueue<CommandData> commandQueue) {
         this.socket = socket;
+        this.commandQueue = commandQueue;
     }
 
     @Override
     public void run() {
         try {
-            while (true) blockingQueue.put(read());
+            while (true) commandQueue.put(read());
         } catch (IOException | InterruptedException e) {
-            Logback.logback("The client has disconnected. This socket will be closed. Please re-connect again to communicate with server.");
+            Logback.logback("The client at port " + socket.getPort() + " has disconnected.");
         }
     }
 

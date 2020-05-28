@@ -2,7 +2,7 @@ package com.company.server.processor;
 
 import com.company.server.user.UserManagement;
 import com.company.server.io.Logback;
-import com.company.server.io.ServerPrinter;
+import com.company.server.io.Collector;
 import com.company.shared.annotations.CommandAnnotation;
 import com.company.shared.exceptions.WrongCommandFormatException;
 import com.company.server.dao.writer.csv.OpenCSVWriter;
@@ -28,10 +28,10 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      * @field listCommands: Use to track previous commands (Command "history").
      */
     private PriorityQueue<SpaceMarine> pq;
-    private ArrayList<String> listCommands;
+    private List<String> listCommands;
     private DateTimeFormatter dtf;
     private java.time.ZonedDateTime initializationDate;
-    private ServerPrinter resultServerPrinter;
+    private Collector<String> messageCollector;
     private UserManagement userManagement; //
     private boolean status; //
 
@@ -46,8 +46,8 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
         this.initializationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
         this.status = false;
     }
-    public void setResultServerPrinter(ServerPrinter resultServerPrinter) {
-        this.resultServerPrinter = resultServerPrinter;
+    public void setMessageCollector(Collector<String> messageCollector) {
+        this.messageCollector = messageCollector;
     }
 
     /**
@@ -69,20 +69,19 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
             listCommands.add(commandData.getCommandName());
             if (listCommands.size() > 6) listCommands.remove(0);
         } catch (WrongCommandFormatException e) {
-            resultServerPrinter.print("print","Command does not exist. Please enter again. Type \"help\" to see the list of commands");
+            messageCollector.collect("Command does not exist. Please enter again. Type \"help\" to see the list of commands");
         }
     }
 
     /**
-     * Print list available commands.
+     * collect list available commands.
      */
     @Override
     public void printListCommand(Object... args) {
-        resultServerPrinter.print("rawPrint",
-                Arrays.stream(ServerCommandsHandlerManipulation.class.getDeclaredMethods())
+        Arrays.stream(ServerCommandsHandlerManipulation.class.getDeclaredMethods())
                 .map(x -> x.getDeclaredAnnotation(CommandAnnotation.class))
-                .map(x -> String.format("%-35s - %-50s\n", x.name(), x.usage()) + "> ")
-                .reduce("", (a, b) -> a + b));
+                .map(x -> String.format("%-35s - %-50s\n", x.name(), x.usage()))
+                .forEach(x -> messageCollector.collect(x));
     }
 
     /**
@@ -90,9 +89,9 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void getGeneralInformation(Object... args) {
-        resultServerPrinter.print("print", "Type of collection: Priority Queue");
-        resultServerPrinter.print("print", "Size of collection: " + pq.size());
-        resultServerPrinter.print("print", "Initialization date: " + dtf.format(initializationDate));
+        messageCollector.collect( "Type of collection: Priority Queue");
+        messageCollector.collect( "Size of collection: " + pq.size());
+        messageCollector.collect( "Initialization date: " + dtf.format(initializationDate));
     }
 
     /**
@@ -100,7 +99,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void getDetailsInformation(Object... args) {
-        resultServerPrinter.print("print", pq.toArray());
+        messageCollector.collect(Arrays.toString(pq.toArray()));
     }
 
     /**
@@ -119,7 +118,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
         SpaceMarine spaceMarine = (SpaceMarine)args[0];
         spaceMarine.setId(pq.size() + 1);                                   // need fix
         pq.add(spaceMarine);
-        resultServerPrinter.print("print", "New Space Marine has been added");
+        messageCollector.collect( "New Space Marine has been added");
     }
 
     /**
@@ -128,19 +127,19 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     @Override
     public void update(Object... args) {
         if (pq.isEmpty()) {
-            resultServerPrinter.print("print", "The collection is empty.");
+            messageCollector.collect( "The collection is empty.");
             return;
         }
         int id = (Integer)args[0];
         if (id < 0 || id > pq.size()) {
-            resultServerPrinter.print("print", "The number of id should be in range (1, " + pq.size() + ")");
+            messageCollector.collect( "The number of id should be in range (1, " + pq.size() + ")");
             return;
         }
         SpaceMarine sm = (SpaceMarine)args[1];
         sm.setId(id);
         pq.removeIf(x -> x.getId().equals(id));
         pq.add(sm);
-        resultServerPrinter.print("print", "Updated collection.");
+        messageCollector.collect( "Updated collection.");
     }
 
     /**
@@ -149,7 +148,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     @Override
     public void removeById(Object... args) {
         pq.removeIf(sm -> sm.getId().equals((Integer)args[0]));
-        resultServerPrinter.print("print", "Removed element.");
+        messageCollector.collect( "Removed element.");
     }
 
     /**
@@ -158,7 +157,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     @Override
     public void clear(Object... args) {
         pq.clear();
-        resultServerPrinter.print("print", "Cleared collection");
+        messageCollector.collect( "Cleared collection");
     }
 
     /**
@@ -168,7 +167,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     @Override
     public void save(Object... args) throws IOException {
         OpenCSVWriter.printOutput(pq);
-        resultServerPrinter.print("print", "Saved collection to file.");
+        messageCollector.collect( "Saved collection to file.");
     }
 
     /**
@@ -195,9 +194,9 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
         Object[] spaceMarines = pq.toArray();
         if (pq.isEmpty() || sm.compareTo((SpaceMarine)spaceMarines[spaceMarines.length - 1]) < 0) {
             pq.add(sm);
-            resultServerPrinter.print("print", "New object was added into the collection");
+            messageCollector.collect( "New object was added into the collection");
         } else {
-            resultServerPrinter.print("print", "New object is not greater than the current maximum object in the collection");
+            messageCollector.collect( "New object is not greater than the current maximum object in the collection");
         }
     }
 
@@ -209,9 +208,9 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
         SpaceMarine sm = (SpaceMarine)args[0];
         if (pq.isEmpty() || sm.compareTo(pq.peek()) > 0) {
             pq.add(sm);
-            resultServerPrinter.print("print", "New object was added into the collection");
+            messageCollector.collect( "New object was added into the collection");
         } else {
-            resultServerPrinter.print("print", "New object is not less then the current minimum object in the collection");
+            messageCollector.collect( "New object is not less then the current minimum object in the collection");
         }
     }
 
@@ -220,7 +219,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void showHistory(Object... args) {
-        resultServerPrinter.print("print", listCommands.toArray());
+        messageCollector.collect(Arrays.toString(listCommands.toArray()));
     }
 
     /**
@@ -229,7 +228,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     @Override
     public void removeByCategory(Object... args) {
         pq.removeIf(x -> x.getCategory().equals(AstartesCategory.valueOf((String)args[0])));
-        resultServerPrinter.print("print", "Removed items whose category field value is equal to the specified");
+        messageCollector.collect( "Removed items whose category field value is equal to the specified");
     }
 
     /**
@@ -237,7 +236,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void countGreaterThanCategory(Object... args) {
-        resultServerPrinter.print("print", "The number of elements is: " + pq.stream()
+        messageCollector.collect( "The number of elements is: " + pq.stream()
                         .filter(x -> x.getCategory() != null)
                         .filter(x -> x.getCategory().ordinal() > AstartesCategory.valueOf((String) args[0]).ordinal())
                         .count());
@@ -248,7 +247,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void filterGreaterThanMeleeWeapon(Object... args) {
-        resultServerPrinter.print("print", pq.stream()
+        messageCollector.collect( pq.stream()
                         .filter(x -> x.getMeleeWeapon() != null)
                         .filter(x -> x.getMeleeWeapon().ordinal() > MeleeWeapon.valueOf((String) args[0]).ordinal())
                         .map(x -> x.toString())

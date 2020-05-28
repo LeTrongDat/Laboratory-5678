@@ -1,6 +1,5 @@
 package com.company.server.thread;
 
-import com.company.server.communication.ServerOutputProcessor;
 import com.company.server.io.Sendable;
 
 import java.io.IOException;
@@ -12,8 +11,9 @@ public class SocketSender implements Runnable, Sendable<String> {
     private Socket socket;
     private BlockingQueue<String> messageQueue;
 
-    public SocketSender(Socket socket) {
+    public SocketSender(Socket socket, BlockingQueue<String> messageQueue) {
         this.socket = socket;
+        this.messageQueue = messageQueue;
     }
 
     @Override
