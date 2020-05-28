@@ -1,4 +1,4 @@
-package com.company.server.dao.entity;
+package com.company.shared.entity;
 
 import java.io.Serializable;
 

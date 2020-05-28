@@ -3,8 +3,8 @@ package com.company.client.CommandsProcessor;
 import com.company.client.Communication.ClientConsoleInputProcessor;
 import com.company.client.Communication.ClientPrinter;
 import com.company.shared.annotations.FieldAnnotation;
-import com.company.shared.objects.Chapter;
-import com.company.shared.objects.Coordinates;
+import com.company.shared.entity.Chapter;
+import com.company.shared.entity.Coordinates;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

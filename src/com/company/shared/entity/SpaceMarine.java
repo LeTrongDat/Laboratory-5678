@@ -1,4 +1,4 @@
-package com.company.server.dao.entity;
+package com.company.shared.entity;
 
 import com.company.shared.annotations.FieldAnnotation;
 
@@ -18,7 +18,7 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
     @FieldAnnotation(type="Integer", ignore = true) private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @FieldAnnotation(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
     @FieldAnnotation(type="Coordinates") private Coordinates coordinates; //Поле не может быть null
-    @FieldAnnotation(type="ZonedDateTime", ignore = true) private ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    @FieldAnnotation(type="ZonedDateTime", ignore = true) private java.time.ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     @FieldAnnotation(type="Integer", min_value = 1) private Integer health; //Поле не может быть null, Значение поля должно быть больше 0
     @FieldAnnotation(type="Enum") private AstartesCategory category; //Поле может быть null
     @FieldAnnotation(type="Enum") private Weapon weaponType; //Поле может быть null

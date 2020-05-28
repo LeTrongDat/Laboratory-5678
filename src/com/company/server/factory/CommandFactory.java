@@ -1,10 +1,10 @@
-package com.company.server.processor;
+package com.company.server.factory;
 
 import com.company.shared.annotations.CommandAnnotation;
 
 import java.io.IOException;
 
-public interface ServerCommandsHandlerManipulation {
+public interface CommandFactory {
     @CommandAnnotation(name = "help", usage = "Display available commands")
     void printListCommand(Object... args);
 
@@ -61,9 +61,12 @@ public interface ServerCommandsHandlerManipulation {
     @CommandAnnotation(name = "exit", usage = "Terminate the program (without saving to a file)")
     void exitProgram(Object... args);
 
-    @CommandAnnotation(name = "sign_up", usage = "Sign up a new account")
+    @CommandAnnotation(name = "sign_up", usage = "Sign up a new account", param = 1)
     void signUp(Object... args);
 
-    @CommandAnnotation(name = "log_in", usage = "Log in to the database")
+    @CommandAnnotation(name = "log_in", usage = "Log in to the database", param = 1)
     void logIn(Object... args);
+
+    @CommandAnnotation(name = "log_out", usage = "Log out of the database")
+    void logOut(Object... args);
 }

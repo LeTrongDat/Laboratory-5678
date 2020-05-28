@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-import com.company.shared.objects.*;
-import com.company.server.processor.ServerCommandsHandler;
+import com.company.shared.entity.*;
+import com.company.server.factory.impl.CommandFactoryImpl;
 
 /**
  * Third-party library for parsing CSV file.
@@ -17,7 +17,7 @@ import com.company.server.processor.ServerCommandsHandler;
  */
 public class  OpenCSVReader {
     private OpenCSVReader(){};
-    public static void getInput(ServerCommandsHandler serverCommandsHandler) {
+    public static void getInput(CommandFactoryImpl commandFactoryImpl) {
         try {
             String csvFile = System.getenv("CSVFile");
             InputStream inputStream = Files.newInputStream(Paths.get(csvFile));
@@ -35,7 +35,7 @@ public class  OpenCSVReader {
                         line[6].equals("null") ? null : MeleeWeapon.valueOf(line[6]),
                         new Chapter(line[7], Long.parseLong(line[8]))
                 );
-                serverCommandsHandler.add(spaceMarine);
+                commandFactoryImpl.add(spaceMarine);
             }
         } catch (FileSystemException e) {
             System.out.println("> Read permission denied.");

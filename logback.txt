@@ -252,3 +252,16 @@
 29/05/2020 03:57:53: Processing command info...
 29/05/2020 03:57:54: Processing command help...
 29/05/2020 03:57:55: Processing command save...
+29/05/2020 04:31:50: Server is listening on port 1270
+29/05/2020 04:31:50: Waiting for client
+29/05/2020 04:31:58: Successful connect with the user at port: 62435
+29/05/2020 04:32:09: The client at port 62435 has disconnected.
+29/05/2020 04:32:11: Successful connect with the user at port: 62439
+29/05/2020 04:32:58: Server is listening on port 1270
+29/05/2020 04:32:58: Waiting for client
+29/05/2020 04:33:03: Successful connect with the user at port: 62458
+29/05/2020 05:59:46: The client at port 62458 has disconnected.
+29/05/2020 06:03:22: Successful connect with the user at port: 63589
+29/05/2020 06:03:23: The client at port 63589 has disconnected.
+29/05/2020 06:03:43: Successful connect with the user at port: 63598
+29/05/2020 06:03:47: The client at port 63598 has disconnected.

@@ -1,7 +1,7 @@
 package com.company.client.Communication;
 
 import com.company.client.CommandsProcessor.ClientCommandsManager;
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -1,4 +1,6 @@
-package com.company.server.io;
+package com.company.server.io.impl;
+
+import com.company.server.io.Collector;
 
 import java.util.Arrays;
 

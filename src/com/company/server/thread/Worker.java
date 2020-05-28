@@ -1,8 +1,8 @@
 package com.company.server.thread;
 
 import com.company.client.CommandsProcessor.ClientCommandsManager;
-import com.company.server.io.MessageCollector;
-import com.company.server.processor.ServerCommandsHandler;
+import com.company.server.io.impl.MessageCollector;
+import com.company.server.factory.impl.CommandFactoryImpl;
 
 public class Worker implements Runnable {
     @Override
@@ -11,9 +11,9 @@ public class Worker implements Runnable {
         ClientCommandsManager clientCommandsManager = new ClientCommandsManager();
         while (true) {
             try {
-                ServerCommandsHandler serverCommandsHandler = new ServerCommandsHandler();
-                serverCommandsHandler.setMessageCollector(new MessageCollector());
-                serverCommandsHandler.processCommand(clientCommandsManager.execute());
+                CommandFactoryImpl commandFactoryImpl = new CommandFactoryImpl();
+                commandFactoryImpl.setMessageCollector(new MessageCollector());
+                commandFactoryImpl.processCommand(clientCommandsManager.execute());
             } catch (Exception e) {
                 e.printStackTrace();
             }

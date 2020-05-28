@@ -4,7 +4,7 @@ import com.company.client.Communication.ClientConsoleInputProcessor;
 import com.company.client.Communication.ClientPrinter;
 import com.company.client.Communication.ClientQueryPrinter;
 import com.company.client.Communication.ClientResultPrinter;
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 
 import java.util.Arrays;
 

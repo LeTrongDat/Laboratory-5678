@@ -1,7 +1,7 @@
 package com.company.server;
 
-import com.company.server.service.impl.SocketServiceImpl;
-import com.company.server.io.Logback;
+import com.company.server.factory.impl.SocketFactoryImpl;
+import com.company.server.io.impl.Log;
 import com.company.server.thread.Worker;
 
 import java.io.IOException;
@@ -17,11 +17,11 @@ public class Main  {
         try {
             int port = args.length < 1 ? 1270 : Integer.parseInt(args[0]);
             ServerSocket serverSocket = new ServerSocket(port);
-            Logback.logback("Server is listening on port " + port);
-            Logback.logback("Waiting for client");
-            new SocketServiceImpl(serverSocket).run();
+            Log.logback("Server is listening on port " + port);
+            Log.logback("Waiting for client");
+            new SocketFactoryImpl(serverSocket).run();
         } catch (IOException e) {
-            Logback.logback("This port is unavailable now.");
+            Log.logback("This port is unavailable now.");
         }
     }
 }

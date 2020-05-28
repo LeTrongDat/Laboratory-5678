@@ -1,8 +1,7 @@
-package com.company.server.thread;
+package com.company.server.io.impl;
 
-import com.company.server.io.Logback;
 import com.company.server.io.Readable;
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +22,7 @@ public class SocketReader implements Runnable, Readable<CommandData> {
         try {
             while (true) commandQueue.put(read());
         } catch (IOException | InterruptedException e) {
-            Logback.logback("The client at port " + socket.getPort() + " has disconnected.");
+            Log.logback("The client at port " + socket.getPort() + " has disconnected.");
         }
     }
 
@@ -33,7 +32,7 @@ public class SocketReader implements Runnable, Readable<CommandData> {
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             return (CommandData) objectInputStream.readObject();
         } catch (ClassNotFoundException e) {
-            Logback.logback("The format of data is not correct.");
+            Log.logback("The format of data is not correct.");
             return null;
         }
     }

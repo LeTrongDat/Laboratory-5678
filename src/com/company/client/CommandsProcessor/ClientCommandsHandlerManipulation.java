@@ -1,6 +1,6 @@
 package com.company.client.CommandsProcessor;
 
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 import com.company.shared.annotations.CommandAnnotation;
 
 import java.lang.reflect.InvocationTargetException;

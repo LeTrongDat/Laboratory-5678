@@ -1,4 +1,4 @@
-package com.company.shared.objects;
+package com.company.shared.entity;
 
 import java.io.Serializable;
 

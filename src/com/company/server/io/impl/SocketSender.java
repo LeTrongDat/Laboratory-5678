@@ -1,4 +1,4 @@
-package com.company.server.thread;
+package com.company.server.io.impl;
 
 import com.company.server.io.Sendable;
 

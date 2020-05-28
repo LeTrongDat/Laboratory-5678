@@ -2,13 +2,13 @@ package com.company.client.CommandsProcessor;
 
 import com.company.client.Communication.ClientConsoleInputProcessor;
 import com.company.client.Communication.ClientPrinter;
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 import com.company.shared.annotations.CommandAnnotation;
 import com.company.shared.exceptions.RecursiveException;
 import com.company.shared.exceptions.WrongCommandFormatException;
-import com.company.shared.objects.AstartesCategory;
-import com.company.shared.objects.MeleeWeapon;
-import com.company.shared.objects.SpaceMarine;
+import com.company.shared.entity.AstartesCategory;
+import com.company.shared.entity.MeleeWeapon;
+import com.company.shared.entity.SpaceMarine;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

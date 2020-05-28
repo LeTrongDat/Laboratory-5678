@@ -1,4 +1,4 @@
-package com.company.server.user;
+package com.company.shared.entity;
 
 public class User {
     private String name;

@@ -1,13 +1,17 @@
-package com.company.server.processor;
+package com.company.server.factory.impl;
 
-import com.company.server.user.UserManagement;
-import com.company.server.io.Logback;
+import com.company.server.controller.UserController;
+import com.company.server.dao.repo.SpaceMarineRepository;
+import com.company.server.factory.CommandFactory;
+import com.company.server.io.impl.Log;
 import com.company.server.io.Collector;
+import com.company.shared.entity.User;
 import com.company.shared.annotations.CommandAnnotation;
+import com.company.shared.exceptions.UnauthorizedUserException;
 import com.company.shared.exceptions.WrongCommandFormatException;
 import com.company.server.dao.writer.csv.OpenCSVWriter;
-import com.company.shared.objects.*;
-import com.company.shared.CommandData;
+import com.company.shared.entity.*;
+import com.company.shared.entity.CommandData;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
  * A class contains all handlers of all commands.
  * @Author Le Trong Dat
  */
-public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
+public class CommandFactoryImpl implements CommandFactory {
     /**
      * @field pq: A collection that contains all objecs.
      * @field sc: Scanner for reading input from stdin.
@@ -32,19 +36,16 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
     private DateTimeFormatter dtf;
     private java.time.ZonedDateTime initializationDate;
     private Collector<String> messageCollector;
-    private UserManagement userManagement; //
-    private boolean status; //
+    private boolean authorized;
+    private SpaceMarineRepository repo;
 
-    public boolean getStatus() {
-        return status;
-    }
 
-    public ServerCommandsHandler() {
+    public CommandFactoryImpl() {
         this.pq = new PriorityQueue<>();
         this.listCommands = new ArrayList<>();
         this.dtf = DateTimeFormatter.ofPattern("HH:mm, dd MMM yyyy");
         this.initializationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
-        this.status = false;
+        this.authorized = false;
     }
     public void setMessageCollector(Collector<String> messageCollector) {
         this.messageCollector = messageCollector;
@@ -59,17 +60,21 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     public synchronized void processCommand(CommandData commandData) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
-            List<Method> methods = Arrays.stream(ServerCommandsHandlerManipulation.class.getDeclaredMethods())
+            List<Method> methods = Arrays.stream(CommandFactory.class.getDeclaredMethods())
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandData.getCommandName()))
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
                     .collect(Collectors.toList());
             if (methods.size() == 0) throw new WrongCommandFormatException();
-            Logback.logback("Processing command " + commandData.getCommandName() + "...");
+            if (!commandData.getCommandName().equals("sign_up") && !commandData.getCommandName().equals("sign_in") && !authorized)
+                throw new UnauthorizedUserException();
+            Log.logback("Processing command " + commandData.getCommandName() + "...");
             methods.get(0).invoke(this, new Object[]{commandData.getCommandArguments()});
             listCommands.add(commandData.getCommandName());
             if (listCommands.size() > 6) listCommands.remove(0);
         } catch (WrongCommandFormatException e) {
             messageCollector.collect("Command does not exist. Please enter again. Type \"help\" to see the list of commands");
+        } catch (UnauthorizedUserException e) {
+            messageCollector.collect("The user is unauthorized. Please log in (by command log_in) or sign up (by command sign_up) new user.");
         }
     }
 
@@ -78,7 +83,7 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void printListCommand(Object... args) {
-        Arrays.stream(ServerCommandsHandlerManipulation.class.getDeclaredMethods())
+        Arrays.stream(CommandFactory.class.getDeclaredMethods())
                 .map(x -> x.getDeclaredAnnotation(CommandAnnotation.class))
                 .map(x -> String.format("%-35s - %-50s\n", x.name(), x.usage()))
                 .forEach(x -> messageCollector.collect(x));
@@ -259,6 +264,9 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void signUp(Object... args) {
+        User user = (User) args[0];
+        if (UserController.signUp(user)) messageCollector.collect("Sign up success.");
+        else messageCollector.collect("The username has been taken. Please sign up by another name.");
     }
 
     /**
@@ -266,5 +274,19 @@ public class ServerCommandsHandler implements ServerCommandsHandlerManipulation{
      */
     @Override
     public void logIn(Object... args) {
+        User user = (User) args[0];
+        if (UserController.logIn(user)) {
+            messageCollector.collect("Logged in successfully.");
+            authorized = true;
+        } else messageCollector.collect("The username or password is incorrect.");
+    }
+
+    /**
+     * Log out of the database.
+     * @param args
+     */
+    @Override
+    public void logOut(Object... args) {
+        authorized = false;
     }
 }

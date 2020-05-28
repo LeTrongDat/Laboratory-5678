@@ -1,6 +1,6 @@
 package com.company.client.Communication;
 
-import com.company.shared.CommandData;
+import com.company.shared.entity.CommandData;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

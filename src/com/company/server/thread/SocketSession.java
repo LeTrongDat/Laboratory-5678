@@ -1,8 +1,10 @@
 package com.company.server.thread;
 
-import com.company.server.processor.ServerCommandsManager;
-import com.company.server.service.impl.SocketServiceImpl;
-import com.company.shared.CommandData;
+import com.company.server.controller.CommandController;
+import com.company.server.factory.impl.SocketFactoryImpl;
+import com.company.server.io.impl.SocketReader;
+import com.company.server.io.impl.SocketSender;
+import com.company.shared.entity.CommandData;
 
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
@@ -20,9 +22,9 @@ public class SocketSession implements Runnable {
         BlockingQueue<CommandData> commandQueue = new SynchronousQueue<>();
         BlockingQueue<String> messageQueue = new SynchronousQueue<>();
 
-        SocketServiceImpl.cachedThreadPool.submit(new SocketReader(socket, commandQueue));
+        SocketFactoryImpl.cachedThreadPool.submit(new SocketReader(socket, commandQueue));
 
-        SocketServiceImpl.fixedThreadPool.submit(new ServerCommandsManager(commandQueue, messageQueue));
+        SocketFactoryImpl.fixedThreadPool.submit(new CommandController(commandQueue, messageQueue));
 
         new Thread(new SocketSender(socket, messageQueue)).start();
     }

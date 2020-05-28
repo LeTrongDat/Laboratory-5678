@@ -1,8 +1,9 @@
-package com.company.server.processor;
+package com.company.server.controller;
 
+import com.company.server.factory.impl.CommandFactoryImpl;
 import com.company.server.io.Collector;
-import com.company.server.io.MessageCollector;
-import com.company.shared.CommandData;
+import com.company.server.io.impl.MessageCollector;
+import com.company.shared.entity.CommandData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.BlockingQueue;
@@ -11,20 +12,20 @@ import java.util.concurrent.BlockingQueue;
  * A class for managing all the commands.
  * @author Le Trong Dat
  */
-public class ServerCommandsManager implements Runnable {
-    private ServerCommandsHandler serverCommandsHandler = new ServerCommandsHandler();
+public class CommandController implements Runnable {
+    private CommandFactoryImpl commandFactoryImpl = new CommandFactoryImpl();
     private BlockingQueue<CommandData> commandQueue;
     private BlockingQueue<String> messageQueue;
 
-    public ServerCommandsManager(BlockingQueue<CommandData> commandQueue, BlockingQueue<String> messageQueue) {
+    public CommandController(BlockingQueue<CommandData> commandQueue, BlockingQueue<String> messageQueue) {
         this.commandQueue = commandQueue;
         this.messageQueue = messageQueue;
     }
 
     public void execute() throws InterruptedException, InvocationTargetException, IllegalAccessException {
         Collector<String> messageCollector = new MessageCollector();
-        serverCommandsHandler.setMessageCollector(messageCollector);
-        serverCommandsHandler.processCommand(commandQueue.take());
+        commandFactoryImpl.setMessageCollector(messageCollector);
+        commandFactoryImpl.processCommand(commandQueue.take());
         String message = messageCollector.getCollection();
         messageQueue.put(message);
     }
@@ -33,11 +34,7 @@ public class ServerCommandsManager implements Runnable {
     public void run() {
         try {
             while (true) execute();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

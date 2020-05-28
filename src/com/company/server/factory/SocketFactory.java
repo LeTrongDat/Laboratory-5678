@@ -1,9 +1,9 @@
-package com.company.server.service;
+package com.company.server.factory;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public interface SocketService {
+public interface SocketFactory {
 
     /**
      * Run service for new client.

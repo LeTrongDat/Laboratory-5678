@@ -1,6 +1,6 @@
 package com.company.server.dao.writer.csv;
 
-import com.company.shared.objects.SpaceMarine;
+import com.company.shared.entity.SpaceMarine;
 
 import java.io.*;
 import java.nio.file.FileSystemException;

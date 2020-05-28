@@ -1,6 +1,6 @@
 package com.company.server.dao.repo;
 
-import com.company.shared.objects.SpaceMarine;
+import com.company.shared.entity.SpaceMarine;
 
 public interface SpaceMarineRepository  {
     void loadDatabase();

@@ -1,15 +1,15 @@
 package com.company.server.dao.repo.impl;
 
-import com.company.server.user.User;
-import com.company.server.dao.repo.AccountRepository;
+import com.company.shared.entity.User;
+import com.company.server.dao.repo.UserRepository;
 
 import java.sql.Connection;
 
-public class AccountRepositoryImpl implements AccountRepository {
+public class UserRepositoryImpl implements UserRepository {
 
     private Connection connection;
 
-    public AccountRepositoryImpl(Connection connection) {
+    public UserRepositoryImpl(Connection connection) {
         this.connection = connection;
     }
 

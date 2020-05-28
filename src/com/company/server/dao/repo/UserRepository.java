@@ -1,8 +1,8 @@
 package com.company.server.dao.repo;
 
-import com.company.server.user.User;
+import com.company.shared.entity.User;
 
-public interface AccountRepository {
+public interface UserRepository {
     User findAccountByName(String name);
     User findAccountByNameAndPassword(String name, String password);
     void save(User user);

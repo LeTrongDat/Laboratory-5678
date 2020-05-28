@@ -1,4 +1,4 @@
-package com.company.shared.objects;
+package com.company.shared.entity;
 
 import com.company.shared.annotations.FieldAnnotation;
 

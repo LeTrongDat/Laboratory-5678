@@ -1,10 +1,10 @@
-package com.company.server.io;
+package com.company.server.io.impl;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Logback {
+public class Log {
     private static FileWriter fileWriter;
 
 

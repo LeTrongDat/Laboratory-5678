@@ -1,8 +1,8 @@
 package com.company.server.dao.repo.impl;
 
-import com.company.server.user.User;
+import com.company.shared.entity.User;
 import com.company.server.dao.repo.SpaceMarineRepository;
-import com.company.shared.objects.SpaceMarine;
+import com.company.shared.entity.SpaceMarine;
 
 import java.sql.Connection;
 
