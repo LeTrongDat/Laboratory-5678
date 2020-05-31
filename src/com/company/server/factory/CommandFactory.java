@@ -1,6 +1,7 @@
 package com.company.server.factory;
 
 import com.company.shared.annotations.CommandAnnotation;
+import com.company.shared.entity.SpaceMarine;
 
 import java.io.IOException;
 
@@ -69,4 +70,6 @@ public interface CommandFactory {
 
     @CommandAnnotation(name = "log_out", usage = "Log out of the database")
     void logOut(Object... args);
+
+    void add(SpaceMarine sm);
 }

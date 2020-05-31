@@ -1,7 +1,6 @@
 package com.company.shared.entity;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class CommandData implements Serializable {
     private String commandName;

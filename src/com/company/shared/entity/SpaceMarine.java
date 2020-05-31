@@ -25,6 +25,7 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
     @FieldAnnotation(type="Enum") private MeleeWeapon meleeWeapon; //Поле может быть null
     @FieldAnnotation(type="Chapter") private Chapter chapter; //Поле не может быть null
 
+    public SpaceMarine(){}
     public SpaceMarine(String name, Coordinates coordinates, Integer health, AstartesCategory category, Weapon weaponType, MeleeWeapon meleeWeapon, Chapter chapter) {
         this.id = count++;
         this.creationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
