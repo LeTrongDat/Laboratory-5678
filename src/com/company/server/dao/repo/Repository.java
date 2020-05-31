@@ -10,5 +10,6 @@ public interface Repository {
     default void handleSQLException(SQLException e) {
         Log.logback("Message: " + e.getMessage());
         Log.logback("SQL State: " + e.getSQLState());
+        e.printStackTrace();
     }
 }

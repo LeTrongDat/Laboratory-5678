@@ -20,9 +20,7 @@ public class SocketSender implements Runnable, Sendable<String> {
     public void run() {
         try {
             while (true) send(messageQueue.take());
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        } catch (InterruptedException | IOException e) { }
     }
 
     @Override

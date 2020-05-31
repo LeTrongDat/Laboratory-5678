@@ -14,7 +14,6 @@ import java.util.Arrays;
  * @author Le Trong Dat
  */
 public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
-    private static Integer count = 1;
     @FieldAnnotation(type="Integer", ignore = true) private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     @FieldAnnotation(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
     @FieldAnnotation(type="Coordinates") private Coordinates coordinates; //Поле не может быть null
@@ -25,9 +24,8 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
     @FieldAnnotation(type="Enum") private MeleeWeapon meleeWeapon; //Поле может быть null
     @FieldAnnotation(type="Chapter") private Chapter chapter; //Поле не может быть null
 
-    public SpaceMarine(){}
     public SpaceMarine(String name, Coordinates coordinates, Integer health, AstartesCategory category, Weapon weaponType, MeleeWeapon meleeWeapon, Chapter chapter) {
-        this.id = count++;
+        this.id = 0;
         this.creationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
         this.name = name;
         this.coordinates = coordinates;
@@ -38,6 +36,7 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
         this.chapter = chapter;
     }
 
+    public SpaceMarine(){}
     public Integer getId() {
         return id;
     }

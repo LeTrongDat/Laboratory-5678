@@ -21,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public User findAccountByName(String name) {
-        String SQL = "SELECT * FROM user.user WHERE name = " + name;
+        String SQL = String.format("SELECT * FROM user_info WHERE username = '%s'", name);
         try {
             ResultSet rs = stm.executeQuery(SQL);
             if (rs.next()) return new User(rs.getString("username"), rs.getString("password"));
@@ -33,8 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findAccountByNameAndPassword(String name, String password) {
-        String SQL = String.format("SELECT * FROM user.user WHERE name = %s AND password = %s",
-                name, password);
+        String SQL = String.format("SELECT * FROM user_info WHERE username = '%s' AND password = '%s'", name, password);
         try {
             ResultSet rs = stm.executeQuery(SQL);
             if (rs.next()) return new User(rs.getString("username"), rs.getString("password"));
@@ -45,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public void save(User user) {
-        String SQL = String.format("INSERT INTO user.user VALUE(%s, %s)", user.getName(), user.getPassword());
+        String SQL = String.format("INSERT INTO user_info VALUES('%s', '%s')", user.getUsername(), user.getPassword());
         try {
             stm.executeUpdate(SQL);
         } catch (SQLException e) {

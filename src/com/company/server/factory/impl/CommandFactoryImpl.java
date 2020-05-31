@@ -2,6 +2,7 @@ package com.company.server.factory.impl;
 
 import com.company.server.controller.UserController;
 import com.company.server.dao.repo.SpaceMarineRepository;
+import com.company.server.dao.repo.impl.SpaceMarineRepositoryImpl;
 import com.company.server.factory.CommandFactory;
 import com.company.server.io.impl.Log;
 import com.company.server.io.Collector;
@@ -9,7 +10,6 @@ import com.company.shared.entity.User;
 import com.company.shared.annotations.CommandAnnotation;
 import com.company.shared.exceptions.UnauthorizedUserException;
 import com.company.shared.exceptions.WrongCommandFormatException;
-import com.company.server.dao.writer.csv.OpenCSVWriter;
 import com.company.shared.entity.*;
 import com.company.shared.entity.CommandData;
 
@@ -32,6 +32,7 @@ public class CommandFactoryImpl implements CommandFactory {
      * @field listCommands: Use to track previous commands (Command "history").
      */
     private PriorityQueue<SpaceMarine> pq;
+    private PriorityQueue<SpaceMarine> newQueue;
     private List<String> listCommands;
     private DateTimeFormatter dtf;
     private java.time.ZonedDateTime initializationDate;
@@ -45,6 +46,7 @@ public class CommandFactoryImpl implements CommandFactory {
         this.listCommands = new ArrayList<>();
         this.dtf = DateTimeFormatter.ofPattern("HH:mm, dd MMM yyyy");
         this.initializationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
+        repo = new SpaceMarineRepositoryImpl();
         this.authorized = false;
     }
     public void setMessageCollector(Collector<String> messageCollector) {
@@ -64,9 +66,8 @@ public class CommandFactoryImpl implements CommandFactory {
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandData.getCommandName()))
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
                     .collect(Collectors.toList());
-            for(Method method: methods) System.out.println(method.getName());
             if (methods.size() == 0) throw new WrongCommandFormatException();
-            if (!commandData.getCommandName().equals("sign_up") && !commandData.getCommandName().equals("sign_in") && !authorized)
+            if (!commandData.getCommandName().equals("sign_up") && !commandData.getCommandName().equals("log_in") && !authorized)
                 throw new UnauthorizedUserException();
             Log.logback("Processing command " + commandData.getCommandName() + "...");
             methods.get(0).invoke(this, new Object[]{commandData.getCommandArguments()});
@@ -112,6 +113,7 @@ public class CommandFactoryImpl implements CommandFactory {
      * Add new object into the collection.
      * @param sm new object
      */
+    @Override
     public void add(SpaceMarine sm) {
         pq.add(sm);
     }
@@ -122,7 +124,8 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public void addObject(Object... args) {
         SpaceMarine spaceMarine = (SpaceMarine)args[0];
-        spaceMarine.setId(pq.size() + 1);                                   // need fix
+        int id = repo.add(spaceMarine);// need fix
+
         pq.add(spaceMarine);
         messageCollector.collect( "New Space Marine has been added");
     }
@@ -172,7 +175,7 @@ public class CommandFactoryImpl implements CommandFactory {
      */
     @Override
     public void save(Object... args) throws IOException {
-        OpenCSVWriter.printOutput(pq);
+        for(SpaceMarine sm: pq) repo.update(sm);
         messageCollector.collect( "Saved collection to file.");
     }
 
@@ -279,6 +282,8 @@ public class CommandFactoryImpl implements CommandFactory {
         if (UserController.logIn(user)) {
             messageCollector.collect("Logged in successfully.");
             authorized = true;
+            repo.register(user);
+            repo.loadDatabase(this);
         } else messageCollector.collect("The username or password is incorrect.");
     }
 
@@ -289,5 +294,6 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public void logOut(Object... args) {
         authorized = false;
+        messageCollector.collect("The user has logged out of the server.");
     }
 }
