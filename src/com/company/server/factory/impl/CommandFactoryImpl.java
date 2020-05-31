@@ -60,8 +60,6 @@ public class CommandFactoryImpl implements CommandFactory {
      */
     public void processCommand(CommandData commandData) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
-            System.out.println(commandData.getCommandName());
-            System.out.println(commandData.getCommandArguments().length);
             List<Method> methods = Arrays.stream(CommandFactory.class.getDeclaredMethods())
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandData.getCommandName()))
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
