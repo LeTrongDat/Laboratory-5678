@@ -64,8 +64,8 @@ public class CommandFactoryImpl implements CommandFactory {
             System.out.println(commandData.getCommandArguments().length);
             List<Method> methods = Arrays.stream(CommandFactory.class.getDeclaredMethods())
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandData.getCommandName()))
-//                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
-                    .collect(Collectors.toList());
+                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
+                    .collecst(Collectors.toList());
             for(Method method: methods) System.out.println(method.getName());
             if (methods.size() == 0) throw new WrongCommandFormatException();
             if (!commandData.getCommandName().equals("sign_up") && !commandData.getCommandName().equals("sign_in") && !authorized)
