@@ -1,6 +1,5 @@
 package com.company.server;
 
-import com.company.resource.Resource;
 import com.company.server.factory.impl.SocketFactoryImpl;
 import com.company.server.io.impl.Log;
 import com.company.server.thread.Worker;
