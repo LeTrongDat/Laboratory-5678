@@ -71,5 +71,6 @@ public interface CommandFactory {
     @CommandAnnotation(name = "log_out", usage = "Log out of the database")
     void logOut(Object... args);
 
+    @CommandAnnotation(name = "helper_method", usage = "add object from database to collection")
     void add(SpaceMarine sm);
 }

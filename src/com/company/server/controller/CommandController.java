@@ -25,6 +25,8 @@ public class CommandController implements Runnable {
     public void execute() throws InterruptedException, InvocationTargetException, IllegalAccessException {
         Collector<String> messageCollector = new MessageCollector();
         commandFactoryImpl.setMessageCollector(messageCollector);
+
+        System.out.println(1);
         commandFactoryImpl.processCommand(commandQueue.take());
         String message = messageCollector.getCollection();
         messageQueue.put(message);

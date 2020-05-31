@@ -58,12 +58,15 @@ public class CommandFactoryImpl implements CommandFactory {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public synchronized void processCommand(CommandData commandData) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public void processCommand(CommandData commandData) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
+            System.out.println(commandData.getCommandName());
+            System.out.println(commandData.getCommandArguments().length);
             List<Method> methods = Arrays.stream(CommandFactory.class.getDeclaredMethods())
                     .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandData.getCommandName()))
-                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
+//                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == commandData.getCommandArguments().length)
                     .collect(Collectors.toList());
+            for(Method method: methods) System.out.println(method.getName());
             if (methods.size() == 0) throw new WrongCommandFormatException();
             if (!commandData.getCommandName().equals("sign_up") && !commandData.getCommandName().equals("sign_in") && !authorized)
                 throw new UnauthorizedUserException();

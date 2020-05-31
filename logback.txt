@@ -10,3 +10,77 @@
 31/05/2020 23:18:21: Server is listening on port 1270
 31/05/2020 23:18:21: Waiting for client
 31/05/2020 23:18:21: Successful connect with the user at port: 52811
+31/05/2020 23:26:31: Server is listening on port 1270
+31/05/2020 23:26:31: Waiting for client
+31/05/2020 23:26:32: Successful connect with the user at port: 52853
+31/05/2020 23:26:46: The client at port 52853 has disconnected.
+31/05/2020 23:26:51: Server is listening on port 1270
+31/05/2020 23:26:51: Waiting for client
+31/05/2020 23:27:20: Successful connect with the user at port: 52864
+31/05/2020 23:27:49: Server is listening on port 1270
+31/05/2020 23:27:49: Waiting for client
+31/05/2020 23:27:58: Server is listening on port 1270
+31/05/2020 23:27:58: Waiting for client
+31/05/2020 23:28:06: Successful connect with the user at port: 52885
+31/05/2020 23:32:50: The client at port 52885 has disconnected.
+31/05/2020 23:32:53: Successful connect with the user at port: 52892
+31/05/2020 23:34:01: Server is listening on port 1270
+31/05/2020 23:34:01: Waiting for client
+31/05/2020 23:34:01: Successful connect with the user at port: 52902
+31/05/2020 23:34:02: The client at port 52902 has disconnected.
+31/05/2020 23:34:07: Successful connect with the user at port: 52908
+31/05/2020 23:40:55: Server is listening on port 1270
+31/05/2020 23:40:55: Waiting for client
+31/05/2020 23:40:59: Successful connect with the user at port: 52952
+31/05/2020 23:41:25: The client at port 52952 has disconnected.
+31/05/2020 23:41:30: Successful connect with the user at port: 52963
+31/05/2020 23:42:27: The client at port 52963 has disconnected.
+31/05/2020 23:42:32: Successful connect with the user at port: 52980
+31/05/2020 23:43:40: Server is listening on port 1270
+31/05/2020 23:43:40: Waiting for client
+31/05/2020 23:43:40: Successful connect with the user at port: 52993
+31/05/2020 23:45:48: Server is listening on port 1270
+31/05/2020 23:45:48: Waiting for client
+31/05/2020 23:45:48: Successful connect with the user at port: 53013
+31/05/2020 23:48:31: Server is listening on port 1270
+31/05/2020 23:48:31: Waiting for client
+31/05/2020 23:48:34: Successful connect with the user at port: 53030
+31/05/2020 23:50:58: Server is listening on port 1270
+31/05/2020 23:50:58: Waiting for client
+31/05/2020 23:50:58: Successful connect with the user at port: 53046
+31/05/2020 23:51:50: Server is listening on port 1270
+31/05/2020 23:51:50: Waiting for client
+31/05/2020 23:51:50: Successful connect with the user at port: 53058
+31/05/2020 23:52:12: Server is listening on port 1270
+31/05/2020 23:52:12: Waiting for client
+31/05/2020 23:52:12: Successful connect with the user at port: 53067
+31/05/2020 23:53:01: Server is listening on port 1270
+31/05/2020 23:53:01: Waiting for client
+31/05/2020 23:53:01: Successful connect with the user at port: 53079
+31/05/2020 23:53:19: Server is listening on port 1270
+31/05/2020 23:53:19: Waiting for client
+31/05/2020 23:53:19: Successful connect with the user at port: 53086
+31/05/2020 23:57:05: Server is listening on port 1270
+31/05/2020 23:57:05: Waiting for client
+31/05/2020 23:57:05: Successful connect with the user at port: 53099
+31/05/2020 23:57:34: Server is listening on port 1270
+31/05/2020 23:57:34: Waiting for client
+31/05/2020 23:57:35: Successful connect with the user at port: 53116
+31/05/2020 23:58:28: Server is listening on port 1270
+31/05/2020 23:58:28: Waiting for client
+31/05/2020 23:58:28: Successful connect with the user at port: 53125
+01/06/2020 00:00:20: Server is listening on port 1270
+01/06/2020 00:00:20: Waiting for client
+01/06/2020 00:00:24: Successful connect with the user at port: 53136
+01/06/2020 00:01:49: Server is listening on port 1270
+01/06/2020 00:01:49: Waiting for client
+01/06/2020 00:01:59: Successful connect with the user at port: 53144
+01/06/2020 00:02:34: Server is listening on port 1270
+01/06/2020 00:02:34: Waiting for client
+01/06/2020 00:02:36: Successful connect with the user at port: 53152
+01/06/2020 00:08:14: Server is listening on port 1270
+01/06/2020 00:08:14: Waiting for client
+01/06/2020 00:08:14: Successful connect with the user at port: 53160
+01/06/2020 00:08:34: Server is listening on port 1270
+01/06/2020 00:08:34: Waiting for client
+01/06/2020 00:08:42: Successful connect with the user at port: 53172
