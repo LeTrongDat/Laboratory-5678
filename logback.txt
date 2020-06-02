@@ -647,3 +647,63 @@
 01/06/2020 06:24:39: Processing command info...
 01/06/2020 06:24:40: Processing command show...
 01/06/2020 06:24:47: Processing command log_out...
+01/06/2020 14:55:14: Server is listening on port 1270
+01/06/2020 14:55:14: Waiting for client
+01/06/2020 14:55:14: Successful connect with the user at port: 58078
+01/06/2020 14:55:21: Processing command log_in...
+01/06/2020 14:56:24: The client at port 58078 has disconnected.
+01/06/2020 14:56:26: Successful connect with the user at port: 58096
+01/06/2020 14:56:38: Processing command sign_up...
+01/06/2020 14:57:24: Server is listening on port 1270
+01/06/2020 14:57:24: Waiting for client
+01/06/2020 14:57:33: Successful connect with the user at port: 58114
+01/06/2020 14:57:41: Processing command sign_up...
+01/06/2020 15:02:32: The client at port 58114 has disconnected.
+01/06/2020 15:02:34: Successful connect with the user at port: 58195
+01/06/2020 15:02:42: Processing command sign_up...
+01/06/2020 15:03:10: Server is listening on port 1270
+01/06/2020 15:03:10: Waiting for client
+01/06/2020 15:03:18: Successful connect with the user at port: 58210
+01/06/2020 15:03:23: Processing command sign_up...
+01/06/2020 15:27:30: Server is listening on port 1270
+01/06/2020 15:27:30: Waiting for client
+01/06/2020 15:27:31: Successful connect with the user at port: 58367
+01/06/2020 15:27:36: Processing command sign_up...
+01/06/2020 15:28:00: Server is listening on port 1270
+01/06/2020 15:28:00: Waiting for client
+01/06/2020 15:28:04: Successful connect with the user at port: 58383
+01/06/2020 15:28:10: Processing command sign_up...
+01/06/2020 15:30:46: The client at port 58383 has disconnected.
+01/06/2020 15:30:53: Server is listening on port 1270
+01/06/2020 15:30:53: Waiting for client
+01/06/2020 15:30:53: Successful connect with the user at port: 58412
+01/06/2020 15:30:59: Processing command sign_up...
+01/06/2020 15:38:28: Processing command sign_up...
+01/06/2020 15:40:59: The client at port 58412 has disconnected.
+01/06/2020 15:41:02: Successful connect with the user at port: 58489
+01/06/2020 15:41:26: Server is listening on port 1270
+01/06/2020 15:41:26: Waiting for client
+01/06/2020 15:41:35: Successful connect with the user at port: 58502
+01/06/2020 15:41:43: Processing command sign_up...
+01/06/2020 15:41:53: Processing command sign_up...
+01/06/2020 15:57:20: Server is listening on port 1270
+01/06/2020 15:57:20: Waiting for client
+01/06/2020 15:57:22: Successful connect with the user at port: 58793
+01/06/2020 15:57:27: Processing command sign_up...
+01/06/2020 16:10:10: The client at port 58793 has disconnected.
+01/06/2020 16:10:14: Successful connect with the user at port: 59226
+01/06/2020 16:10:19: Successful connect with the user at port: 59230
+01/06/2020 16:10:32: The client at port 59230 has disconnected.
+01/06/2020 16:10:32: The client at port 59226 has disconnected.
+01/06/2020 16:10:34: Successful connect with the user at port: 59239
+01/06/2020 16:10:55: Successful connect with the user at port: 59247
+01/06/2020 16:30:26: The client at port 59247 has disconnected.
+01/06/2020 16:30:26: The client at port 59239 has disconnected.
+01/06/2020 16:30:31: Successful connect with the user at port: 59502
+01/06/2020 16:30:42: Processing command sign_up...
+01/06/2020 16:31:05: Processing command sign_up...
+01/06/2020 16:31:08: The client at port 59502 has disconnected.
+01/06/2020 16:48:07: Server is listening on port 1270
+01/06/2020 16:48:07: Waiting for client
+01/06/2020 16:48:07: Successful connect with the user at port: 50479
+01/06/2020 18:11:25: The client at port 50479 has disconnected.

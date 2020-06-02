@@ -15,13 +15,6 @@ public class Main  {
     public static void main(String... args) {
         new  Thread(new Worker()).start();
         try {
-            new Resource().run();
-            System.out.print("> ");
-        } catch (SQLException e) {
-            Log.logback("Message: " + e.getMessage());
-            Log.logback("SQL State: " + e.getSQLState());
-        }
-        try {
             int port = args.length < 1 ? 1270 : Integer.parseInt(args[0]);
             ServerSocket serverSocket = new ServerSocket(port);
             Log.logback("Server is listening on port " + port);

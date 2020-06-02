@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS melee_weapon (
     PRIMARY KEY(melee_weapon_id));
 
 INSERT INTO melee_weapon(melee_weapon)
-VALUES ('null'),
+VALUES ('NULL'),
     ('MANREAPER'),
     ('LIGHTING_CLAW'),
     ('POWER_FIST');
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS astartes_category (
 
 INSERT INTO astartes_category(astartes_category)
 VALUES
-('null'),
+('NULL'),
 ('SCOUT'),
 ('INCEPTOR'),
 ('TACTICAL'),
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS weapon (
 
 INSERT INTO weapon(weapon)
 VALUES
-('null'),
+('NULL'),
 ('COMBI_FLAMER'),
 ('FLAMER'),
 ('INFERNO_PISTOL'),
