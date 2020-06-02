@@ -23,9 +23,10 @@ VALUES ('NULL'),
 CREATE TABLE IF NOT EXISTS astartes_category (
      astartes_category_id SERIAL,
      astartes_category VARCHAR(20),
-     PRIMARY KEY(astartes_category_id));
+     PRIMARY KEY(astartes_category_id))
 
-INSERT INTO astartes_category(astartes_category) VALUES
+INSERT INTO astartes_category(astartes_category)
+VALUES
 ('NULL'),
 ('SCOUT'),
 ('INCEPTOR'),

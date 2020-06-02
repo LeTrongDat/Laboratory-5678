@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 public class CommandFactoryImpl implements CommandFactory {
     /**
-     * @field pq: A collection that contains all objecs.
+     * @field pq: A collection that contains all objects.
      * @field sc: Scanner for reading input from stdin.
      * @field listCommands: Use to track previous commands (Command "history").
      */
@@ -42,7 +42,11 @@ public class CommandFactoryImpl implements CommandFactory {
 
 
     public CommandFactoryImpl() {
+        setUp();
+    }
+    private void setUp() {
         this.pq = new PriorityQueue<>();
+        this.newQueue = new PriorityQueue<>();
         this.listCommands = new ArrayList<>();
         this.dtf = DateTimeFormatter.ofPattern("HH:mm, dd MMM yyyy");
         this.initializationDate = LocalDateTime.now().atZone(ZoneId.of("UTC+7"));
@@ -124,8 +128,7 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public void addObject(Object... args) {
         SpaceMarine spaceMarine = (SpaceMarine)args[0];
-        int id = repo.add(spaceMarine);// need fix
-
+        newQueue.add(spaceMarine);
         pq.add(spaceMarine);
         messageCollector.collect( "New Space Marine has been added");
     }
@@ -147,6 +150,7 @@ public class CommandFactoryImpl implements CommandFactory {
         SpaceMarine sm = (SpaceMarine)args[1];
         sm.setId(id);
         pq.removeIf(x -> x.getId().equals(id));
+        repo.update(sm);
         pq.add(sm);
         messageCollector.collect( "Updated collection.");
     }
@@ -174,8 +178,8 @@ public class CommandFactoryImpl implements CommandFactory {
      * @throws IOException
      */
     @Override
-    public void save(Object... args) throws IOException {
-        for(SpaceMarine sm: pq) repo.update(sm);
+    public void save(Object... args) {
+        for(SpaceMarine sm: newQueue) repo.add(sm);
         messageCollector.collect( "Saved collection to file.");
     }
 
@@ -284,6 +288,7 @@ public class CommandFactoryImpl implements CommandFactory {
             authorized = true;
             repo.register(user);
             repo.loadDatabase(this);
+
         } else messageCollector.collect("The username or password is incorrect.");
     }
 
@@ -293,7 +298,8 @@ public class CommandFactoryImpl implements CommandFactory {
      */
     @Override
     public void logOut(Object... args) {
-        authorized = false;
+        save(args);
+        setUp();
         messageCollector.collect("The user has logged out of the server.");
     }
 }

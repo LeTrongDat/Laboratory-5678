@@ -30,7 +30,7 @@ public interface CommandFactory {
     void clear(Object... args);
 
     @CommandAnnotation(name = "save", usage = "Save collection to file")
-    void save(Object... args) throws IOException;
+    void save(Object... args) ;
 
     @CommandAnnotation(name = "execute_script", usage = "Read and execute the script from the specified file." +
             "The script contains commands in the same form in which they are entered by the user interactively.")

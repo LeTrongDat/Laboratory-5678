@@ -36,7 +36,7 @@ public class CommandController implements Runnable {
         try {
             while (true) execute();
         } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
-            e.printStackTrace();
+
         }
     }
 }

@@ -31,7 +31,7 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
         String SQL = String.format("SELECT * FROM space_marine WHERE created_by = '%s'", username);
         try {
             ResultSet rs = getStm().executeQuery(SQL);
-            for(; rs.next();) commandFactory.add(getSpaceMarine(rs));
+            while (rs.next()) commandFactory.add(getSpaceMarine(rs));
         } catch (SQLException e) { handleSQLException(e); }
     }
 
@@ -84,7 +84,7 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
                 " WHERE " + name + "_id = " + rs.getInt(name + "_id");
         ResultSet resultSet = getStm().executeQuery(SQL);
         resultSet.next();
-        if (resultSet.getString(name).equals("null")) return null;
+        if (resultSet.getString(name).equals("NULL")) return null;
         return Enum.valueOf(enumClass, resultSet.getString(name));
     }
     SpaceMarine getSpaceMarine(ResultSet rs) throws SQLException {
@@ -109,9 +109,12 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
                 chapter = new Chapter(resultSet.getString("name"), (long)resultSet.getInt("marines_count"));
             }
         }
+
         ZonedDateTime creationDate = rs.getDate("creation_date").toLocalDate().atStartOfDay(ZoneId.of("UTC+7"));
         Integer health = rs.getInt("health");
+
         AstartesCategory category = getEnum(rs, "astartes_category", AstartesCategory.class);
+
         MeleeWeapon meleeWeapon = getEnum(rs, "melee_weapon", MeleeWeapon.class);
         Weapon weapon = getEnum(rs, "weapon", Weapon.class);
 
@@ -125,6 +128,7 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
         sm.setWeaponType(weapon);
         sm.setMeleeWeapon(meleeWeapon);
         sm.setChapter(chapter);
+
         return sm;
     }
     private void updateChapter(ResultSet chapterSet, Chapter chapter) throws SQLException {

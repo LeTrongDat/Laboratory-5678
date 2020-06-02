@@ -1,18 +1,20 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Laboratory 4th:jar">
+  <artifact name="Laboratory 4th:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Laboratory_4th_jar</output-path>
-    <root id="archive" name="Laboratory 4th.jar">
-      <element id="module-output" name="server" />
-      <element id="module-output" name="Laboratory 4th" />
+    <root id="root">
+      <element id="archive" name="Laboratory 4th.jar">
+        <element id="module-output" name="Laboratory 4th" />
+      </element>
+      <element id="file-copy" path="$USER_HOME$/Downloads/jar_files/commons-beanutils-1.9.3.jar" />
+      <element id="library" level="project" name="postgresql-42.2.12" />
+      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/jar_files/commons-collections-3.2.2.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/jar_files/commons-lang3-3.6.jar" />
       <element id="library" level="project" name="jar_files" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files/commons-beanutils-1.9.3.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files/commons-collections-3.2.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files/commons-text-1.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/libs/opencsv-4.1.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files/commons-lang3-3.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/Downloads/jar_files/commons-logging-1.2.jar" path-in-jar="/" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/jar_files/commons-logging-1.2.jar" />
       <element id="library" level="project" name="opencsv-5.1" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/jar_files/commons-text-1.1.jar" />
+      <element id="library" level="project" name="opencsv-4.1" />
     </root>
   </artifact>
 </component>
