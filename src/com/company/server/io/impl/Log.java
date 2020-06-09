@@ -5,16 +5,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Log {
-    private static FileWriter fileWriter;
-
-
-    public synchronized static void logback(String str) {
+    public static void logback(String str) {
         DateTimeFormatter dtm = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
         LocalDateTime now = LocalDateTime.now();
+
         System.out.print(str + "\n> ");
+
         try {
-            fileWriter = new FileWriter("logback.txt", true);
-            fileWriter.append(dtm.format(now) + ": " + str + '\n');
+            FileWriter fileWriter = new FileWriter("logback.txt", true);
+
+            fileWriter.append(dtm.format(now)).append(": ").append(str).append(String.valueOf('\n'));
+
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

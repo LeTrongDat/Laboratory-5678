@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandAnnotation {
+public @interface Command {
     public String name() default "";
     public String usage() default "";
     public int param() default 0;

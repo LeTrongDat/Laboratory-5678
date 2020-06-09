@@ -1,6 +1,6 @@
 package com.company.shared.entity;
 
-import com.company.shared.annotations.FieldAnnotation;
+import com.company.shared.annotations.Field;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,15 +14,15 @@ import java.util.Arrays;
  * @author Le Trong Dat
  */
 public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
-    @FieldAnnotation(type="Integer", ignore = true) private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    @FieldAnnotation(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
-    @FieldAnnotation(type="Coordinates") private Coordinates coordinates; //Поле не может быть null
-    @FieldAnnotation(type="ZonedDateTime", ignore = true) private java.time.ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    @FieldAnnotation(type="Integer", min_value = 1) private Integer health; //Поле не может быть null, Значение поля должно быть больше 0
-    @FieldAnnotation(type="Enum") private AstartesCategory category; //Поле может быть null
-    @FieldAnnotation(type="Enum") private Weapon weaponType; //Поле может быть null
-    @FieldAnnotation(type="Enum") private MeleeWeapon meleeWeapon; //Поле может быть null
-    @FieldAnnotation(type="Chapter") private Chapter chapter; //Поле не может быть null
+    @Field(type="Integer", ignore = true) private Integer id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
+    @Field(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
+    @Field(type="Coordinates") private Coordinates coordinates; //Поле не может быть null
+    @Field(type="ZonedDateTime", ignore = true) private java.time.ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    @Field(type="Integer", min_value = 1) private Integer health; //Поле не может быть null, Значение поля должно быть больше 0
+    @Field(type="Enum") private AstartesCategory category; //Поле может быть null
+    @Field(type="Enum") private Weapon weaponType; //Поле может быть null
+    @Field(type="Enum") private MeleeWeapon meleeWeapon; //Поле может быть null
+    @Field(type="Chapter") private Chapter chapter; //Поле не может быть null
 
     public SpaceMarine(String name, Coordinates coordinates, Integer health, AstartesCategory category, Weapon weaponType, MeleeWeapon meleeWeapon, Chapter chapter) {
         this.id = 0;
@@ -128,9 +128,5 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
                 "Weapon: " + weaponType + '\n' +
                 "Melee Weapon: " + meleeWeapon + '\n' +
                 "Chapter: " + chapter.toString() + '\n';
-    }
-    public String csv() {
-        Object[] objects = {name, coordinates.csv(), health, category, weaponType, meleeWeapon, chapter.csv()};
-        return Arrays.toString(objects).replaceAll("[\\[\\]]", "");
     }
 }

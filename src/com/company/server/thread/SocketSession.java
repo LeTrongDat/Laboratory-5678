@@ -20,6 +20,7 @@ public class SocketSession implements Runnable {
     @Override
     public void run() {
         BlockingQueue<CommandData> commandQueue = new SynchronousQueue<>();
+
         BlockingQueue<String> messageQueue = new SynchronousQueue<>();
 
         SocketFactoryImpl.cachedThreadPool.submit(new SocketReader(socket, commandQueue));

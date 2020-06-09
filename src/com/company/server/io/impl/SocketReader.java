@@ -10,17 +10,19 @@ import java.util.concurrent.BlockingQueue;
 
 public class SocketReader implements Runnable, Readable<CommandData> {
     private Socket socket;
+
     private BlockingQueue<CommandData> commandQueue;
 
     public SocketReader(Socket socket, BlockingQueue<CommandData> commandQueue) {
         this.socket = socket;
+
         this.commandQueue = commandQueue;
     }
 
     @Override
     public void run() {
         try {
-            while (true) commandQueue.put(read());
+            while (true) this.commandQueue.put(read());
         } catch (IOException | InterruptedException e) {
             Log.logback("The client at port " + socket.getPort() + " has disconnected.");
         }
@@ -28,12 +30,16 @@ public class SocketReader implements Runnable, Readable<CommandData> {
 
     @Override
     public CommandData read() throws IOException {
+        CommandData commandData = null;
+
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            return (CommandData) objectInputStream.readObject();
+
+            commandData = (CommandData) objectInputStream.readObject();
         } catch (ClassNotFoundException e) {
             Log.logback("The format of data is not correct.");
-            return null;
         }
+
+        return commandData;
     }
 }

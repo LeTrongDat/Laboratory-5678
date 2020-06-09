@@ -1,6 +1,6 @@
 package com.company.shared.entity;
 
-import com.company.shared.annotations.FieldAnnotation;
+import com.company.shared.annotations.Field;
 
 import java.io.Serializable;
 
@@ -10,11 +10,12 @@ import java.io.Serializable;
  * @author Le Trong Dat
  */
 public class Chapter implements Serializable {
-    @FieldAnnotation(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
-    @FieldAnnotation(type="Long", min_value = 1, max_value = 1000) private Long marinesCount; //Поле может быть null, Значение поля должно быть больше 0, Максимальное значение поля: 1000
+    @Field(type="String") private String name; //Поле не может быть null, Строка не может быть пустой
+    @Field(type="Long", min_value = 1, max_value = 1000) private Long marinesCount; //Поле может быть null, Значение поля должно быть больше 0, Максимальное значение поля: 1000
 
     public Chapter(String name, Long marinesCount) {
         this.name = name;
+
         this.marinesCount = marinesCount;
     }
 
@@ -33,10 +34,8 @@ public class Chapter implements Serializable {
     public void setMarinesCount(Long marinesCount) {
         this.marinesCount = marinesCount;
     }
+
     public String toString() {
         return "(" + name + ", " + marinesCount + ")";
-    }
-    public String csv() {
-        return "\"(" + name + ", " + marinesCount + ")\"";
     }
 }

@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS user_info (
 CREATE TABLE IF NOT EXISTS chapter  (
     chapter_id  SERIAL,
     name VARCHAR(20),
-    marines_count INT CHECK(marines_count >= 1 AND marines_count <= 1000) NOT NULL,
+--     marines_count INT CHECK(marines_count >= 1 AND marines_count <= 1000) NOT NULL,
+    marines_count INT NOT NULL,
     PRIMARY KEY(chapter_id));
 
 CREATE TABLE IF NOT EXISTS melee_weapon (

@@ -3,7 +3,7 @@ package com.company.client.CommandsProcessor;
 import com.company.client.Communication.ClientConsoleInputProcessor;
 import com.company.client.Communication.ClientPrinter;
 import com.company.shared.entity.CommandData;
-import com.company.shared.annotations.CommandAnnotation;
+import com.company.shared.annotations.Command;
 import com.company.shared.exceptions.RecursiveException;
 import com.company.shared.exceptions.WrongCommandFormatException;
 import com.company.shared.entity.AstartesCategory;
@@ -90,8 +90,8 @@ public class ClientCommandsHandler implements ClientCommandsHandlerManipulation 
     public CommandData processCommand(String commandName, Object... args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
             List<Method> methods = Arrays.stream(ClientCommandsHandlerManipulation.class.getDeclaredMethods())
-                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).name().equals(commandName))
-                    .filter(x -> x.getDeclaredAnnotation(CommandAnnotation.class).param() == args.length)
+                    .filter(x -> x.getDeclaredAnnotation(Command.class).name().equals(commandName))
+                    .filter(x -> x.getDeclaredAnnotation(Command.class).param() == args.length)
                     .collect(Collectors.toList());
             if (methods.isEmpty()) throw new WrongCommandFormatException();
             return (CommandData) methods.get(0).invoke(this, new Object[]{args});

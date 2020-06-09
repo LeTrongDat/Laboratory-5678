@@ -4,56 +4,41 @@ import com.company.shared.entity.User;
 import com.company.server.dao.repo.UserRepository;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepository {
-    private Statement stm;
+    private Connection con;
 
-    public UserRepositoryImpl() {
-        String url = System.getenv("url");
-        String host = System.getenv("host");
-        String password = System.getenv("password");
-        try {
-            Connection con = DriverManager.getConnection(url, host, password);
-            stm = con.createStatement();
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
+    public UserRepositoryImpl(Connection con) {
+        this.con = con;
     }
+
     @Override
-    public User findAccountByName(String name) {
+    public Optional<User> findAccountByName(String name) throws SQLException {
         String SQL = String.format("SELECT * FROM user_info WHERE username = '%s'", name);
-        try {
-            ResultSet rs = stm.executeQuery(SQL);
-            if (rs.next()) return new User(rs.getString("username"), rs.getString("password"));
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
-        return null;
+
+        ResultSet rs = con.createStatement().executeQuery(SQL);
+
+        return rs.next()
+                ? Optional.of(new User(rs.getString("username"), rs.getString("password")))
+                : Optional.empty();
     }
 
     @Override
-    public User findAccountByNameAndPassword(String name, String password) {
+    public Optional<User> findAccountByNameAndPassword(String name, String password) throws SQLException {
         String SQL = String.format("SELECT * FROM user_info WHERE username = '%s' AND password = '%s'", name, password);
-        try {
-            ResultSet rs = stm.executeQuery(SQL);
-            if (rs.next()) return new User(rs.getString("username"), rs.getString("password"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+        ResultSet rs = con.createStatement().executeQuery(SQL);
+
+        return rs.next()
+                ? Optional.of(new User(rs.getString("username"), rs.getString("password")))
+                : Optional.empty();
     }
+
     @Override
-    public void save(User user) {
+    public void save(User user) throws SQLException {
         String SQL = String.format("INSERT INTO user_info VALUES('%s', '%s')", user.getUsername(), user.getPassword());
-        try {
-            stm.executeUpdate(SQL);
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
-    }
 
-    @Override
-    public void register(User user) {
-
+        con.createStatement().executeUpdate(SQL);
     }
 }

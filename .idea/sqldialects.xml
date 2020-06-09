@@ -3,5 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/com/company/resource/V01062020_0629.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/com/company/server/dao/repo/UserRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/com/company/server/dao/repo/impl/CoordinatesRepositoryImpl.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/com/company/server/dao/repo/impl/SpaceMarineRepositoryImpl.java" dialect="PostgreSQL" />
   </component>
 </project>

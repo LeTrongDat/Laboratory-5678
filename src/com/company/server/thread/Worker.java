@@ -8,11 +8,15 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         System.out.print("> ");
+
         ClientCommandsManager clientCommandsManager = new ClientCommandsManager();
+
         while (true) {
             try {
                 CommandFactoryImpl commandFactoryImpl = new CommandFactoryImpl();
-                commandFactoryImpl.setMessageCollector(new MessageCollector());
+
+                commandFactoryImpl.setResponder(new MessageCollector());
+
                 commandFactoryImpl.processCommand(clientCommandsManager.execute());
             } catch (Exception e) {
                 e.printStackTrace();

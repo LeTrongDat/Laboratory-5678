@@ -7,33 +7,61 @@ import com.company.shared.entity.User;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Objects;
+import java.util.Optional;
 
 public class UserController {
-    private static UserRepository repo = new UserRepositoryImpl();
-    private static String encryptBySHA1(String str) {
+
+    private final static UserRepository repo;
+
+    static {
+        Connection con = null;
+
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            byte[] messageDigest = md.digest(str.getBytes());
-            BigInteger bi = new BigInteger(1, messageDigest);
-            String hashText = bi.toString(16);
-            while (hashText.length() < 40) hashText = '0' + hashText;
-            return hashText;
-        } catch (NoSuchAlgorithmException e) {
+            con = DriverManager.getConnection(System.getenv("url"),
+                    System.getenv("host"),
+                    System.getenv("password"));
+        } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
+
+        repo = new UserRepositoryImpl(con);
     }
-    public static synchronized boolean signUp(User user) {
-        User opt = repo.findAccountByName(user.getUsername());
-        if (opt != null) return false;
+
+    private static String encryptBySHA1(String str) {
+        MessageDigest messageDigest = null;
+
+        try { messageDigest = MessageDigest.getInstance("SHA-1"); } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+
+        byte[] bytes = Objects.requireNonNull(messageDigest).digest(str.getBytes());
+
+        BigInteger bi = new BigInteger(1, bytes);
+
+        StringBuilder strBuilder = new StringBuilder(bi.toString());
+
+        while (strBuilder.length() < 40) strBuilder.insert(0, '0');
+
+        return strBuilder.toString();
+    }
+
+    public static boolean signUp(User user) throws SQLException {
+        Optional<User> opt = repo.findAccountByName(user.getUsername());
+
+        if (opt.isPresent()) return false;
+
         user.setPassword(encryptBySHA1(user.getPassword()));
+
         repo.save(user);
+
         return true;
     }
-    public static synchronized boolean logIn(User user) {
-        User opt = repo.findAccountByNameAndPassword(user.getUsername(),
+
+    public static boolean logIn(User user) throws SQLException {
+        Optional<User> opt = repo.findAccountByNameAndPassword(user.getUsername(),
                                         encryptBySHA1(user.getPassword()));
-        if (opt != null) return true;
-        return false;
+        return opt.isPresent();
     }
 }

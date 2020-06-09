@@ -1,189 +1,158 @@
 package com.company.server.dao.repo.impl;
 
+import com.company.server.dao.repo.*;
 import com.company.server.factory.CommandFactory;
 import com.company.shared.entity.*;
-import com.company.server.dao.repo.SpaceMarineRepository;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
+
 
 public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
-    private String username;
+    private Connection con;
 
-    public Statement getStm() {
-        String url = System.getenv("url");
-        String host = System.getenv("host");
-        String password = System.getenv("password");
-        try {
-            Connection con = DriverManager.getConnection(url, host, password);
-            return con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-                    ResultSet.CONCUR_UPDATABLE);
-        } catch (SQLException e) {
-            handleSQLException(e);
+    private ChapterRepository chapterRepo;
+
+    private CoordinatesRepository coordinatesRepo;
+
+    private AstartesCategoryRepository astartesCategoryRepo;
+
+    private MeleeWeaponRepository meleeWeaponRepo;
+
+    private WeaponRepository weaponRepo;
+
+    private User user;
+
+    public SpaceMarineRepositoryImpl(Connection con) {
+        this.con = con;
+
+        chapterRepo = new ChapterRepositoryImpl(con);
+
+        coordinatesRepo = new CoordinatesRepositoryImpl(con);
+
+        astartesCategoryRepo = new AstartesCategoryRepositoryImpl(con);
+
+        meleeWeaponRepo = new MeleeWeaponRepositoryImpl(con);
+
+        weaponRepo = new WeaponRepositoryImpl(con);
+    }
+
+    @Override
+    public void loadDatabase(CommandFactory commandFactory) throws SQLException {
+        String SQL = String.format("SELECT * FROM space_marine WHERE created_by = '%s'", user.getUsername());
+
+        ResultSet rs = con.createStatement().executeQuery(SQL);
+
+        while (rs.next()) {
+
+            SpaceMarine sm = new SpaceMarine();
+
+            sm.setId(rs.getInt("id"));
+
+            sm.setName(rs.getString("name"));
+
+            sm.setCoordinates(coordinatesRepo.findById(rs.getInt("coordinates_id")));
+
+            sm.setCreationDate(rs.getDate("creation_date").toLocalDate().atStartOfDay(ZoneId.of("UTC+7")));
+
+            sm.setHealth(rs.getInt("health"));
+
+            sm.setCategory(astartesCategoryRepo.findById(rs.getInt("astartes_category_id")));
+
+            sm.setMeleeWeapon(meleeWeaponRepo.findById(rs.getInt("melee_weapon_id")));
+
+            sm.setWeaponType(weaponRepo.findById(rs.getInt("weapon_id")));
+
+            sm.setChapter(chapterRepo.findById(rs.getInt("chapter_id")));
+
+            commandFactory.add(sm);
         }
-        return null;
     }
 
     @Override
-    public void loadDatabase(CommandFactory commandFactory) {
-        String SQL = String.format("SELECT * FROM space_marine WHERE created_by = '%s'", username);
-        try {
-            ResultSet rs = getStm().executeQuery(SQL);
-            while (rs.next()) commandFactory.add(getSpaceMarine(rs));
-        } catch (SQLException e) { handleSQLException(e); }
+    public int update(SpaceMarine sm) throws SQLException {
+        String SQL = "UPDATE space_marine SET " +
+                "name = ?, " +
+                "creation_date = ?, " +
+                "health = ?, " +
+                "astartes_category_id = ?, " +
+                "weapon_id = ?, " +
+                "melee_weapon_id = ? " +
+                "WHERE id = ? AND created_by = ? RETURNING id, coordinates_id, chapter_id";
+
+        PreparedStatement pst = con.prepareStatement(SQL);
+
+        pst.setString(1, sm.getName());
+
+        pst.setDate(2, Date.valueOf(sm.getCreationDate().toLocalDate()));
+
+        pst.setInt(3, sm.getHealth());
+
+        pst.setInt(4, sm.getCategory() == null ? 1 : sm.getCategory().ordinal() + 2);
+
+        pst.setInt(5, sm.getWeaponType() == null ? 1 : sm.getWeaponType().ordinal() + 2);
+
+        pst.setInt(6, sm.getMeleeWeapon() == null ? 1 : sm.getMeleeWeapon().ordinal() + 2);
+
+        pst.setInt(7, sm.getId());
+
+        pst.setString(8, user.getUsername());
+
+        ResultSet rs = pst.executeQuery();
+
+        if (!rs.next()) return -1;
+
+        coordinatesRepo.update(sm.getCoordinates(), rs.getInt("coordinates_id"));
+
+        chapterRepo.update(sm.getChapter(), rs.getInt("chapter_id"));
+
+        return rs.getInt("id");
     }
 
     @Override
-    public void update(SpaceMarine sm) {
-        try {
-            ResultSet smSet = getStm().executeQuery("SELECT * FROM space_marine " +
-                    "WHERE id = " + sm.getId().toString());
-            smSet.next();
+    public int add(SpaceMarine sm) throws SQLException {
+        String SQL = "INSERT INTO space_marine(" +
+                "name, " +
+                "coordinates_id, " +
+                "creation_date, " +
+                "health, " +
+                "astartes_category_id, " +
+                "weapon_id, " +
+                "melee_weapon_id, " +
+                "chapter_id, " +
+                "created_by" +
+                ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
 
-            ResultSet chapterSet = getStm().executeQuery("SELECT * FROM chapter " +
-                    "WHERE chapter_id = " + smSet.getInt("chapter_id"));
-            chapterSet.next();
+        PreparedStatement pst = con.prepareStatement(SQL);
 
-            ResultSet coordinatesSet = getStm().executeQuery("SELECT * FROM coordinates " +
-                    "WHERE coordinates_id + " + smSet.getInt("coordinates_id"));
-            coordinatesSet.next();
+        pst.setString(1, sm.getName());
 
-            updateChapter(chapterSet, sm.getChapter());
-            updateCoordinates(coordinatesSet, sm.getCoordinates());
-            updateSpaceMarine(smSet, sm, chapterSet, coordinatesSet);
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
+        pst.setInt(2, coordinatesRepo.add(sm.getCoordinates()));
+
+        pst.setDate(3, Date.valueOf(sm.getCreationDate().toLocalDate()));
+
+        pst.setInt(4, sm.getHealth());
+
+        pst.setInt(5, sm.getCategory() == null ? 1 : sm.getCategory().ordinal() + 2);
+
+        pst.setInt(6, sm.getWeaponType() == null ? 1 : sm.getWeaponType().ordinal() + 2);
+
+        pst.setInt(7, sm.getMeleeWeapon() == null ? 1 : sm.getMeleeWeapon().ordinal() + 2);
+
+        pst.setInt(8, chapterRepo.add(sm.getChapter()));
+
+        pst.setString(9, user.getUsername());
+
+        ResultSet rs = pst.executeQuery();
+
+        rs.next();
+
+        return rs.getInt("id");
     }
 
-    @Override
-    public int add(SpaceMarine sm) {
-        try {
-            return insertSpaceMarine(sm);
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
-        return 0;
-    }
-
-    @Override
-    public void remove(SpaceMarine sm) {
-
-    }
 
     @Override
     public void register(User user) {
-        username = user.getUsername();
-    }
-
-    // --- private method ---
-    private <E extends Enum<E>> E getEnum(ResultSet rs, String name, Class<E> enumClass) throws SQLException {
-        String SQL = "SELECT * FROM " + name +
-                " WHERE " + name + "_id = " + rs.getInt(name + "_id");
-        ResultSet resultSet = getStm().executeQuery(SQL);
-        resultSet.next();
-        if (resultSet.getString(name).equals("NULL")) return null;
-        return Enum.valueOf(enumClass, resultSet.getString(name));
-    }
-    SpaceMarine getSpaceMarine(ResultSet rs) throws SQLException {
-        Integer id = rs.getInt("id");
-        String name = rs.getString("name");
-        Coordinates coordinates = null;
-        {
-            String SQL = "SELECT * FROM coordinates " +
-                    "WHERE coordinates_id = " + ((Integer)rs.getInt("coordinates_id")).toString();
-
-            ResultSet resultSet = getStm().executeQuery(SQL);
-            while (resultSet.next()) {
-                coordinates = new Coordinates(resultSet.getInt("x"), resultSet.getInt("y"));
-            }
-        }
-        Chapter chapter = null;
-        {
-            String SQL = "SELECT * FROM chapter " +
-                    "WHERE chapter_id = " + ((Integer)rs.getInt("chapter_id")).toString();
-            ResultSet resultSet = getStm().executeQuery(SQL);
-            while (resultSet.next()) {
-                chapter = new Chapter(resultSet.getString("name"), (long)resultSet.getInt("marines_count"));
-            }
-        }
-
-        ZonedDateTime creationDate = rs.getDate("creation_date").toLocalDate().atStartOfDay(ZoneId.of("UTC+7"));
-        Integer health = rs.getInt("health");
-
-        AstartesCategory category = getEnum(rs, "astartes_category", AstartesCategory.class);
-
-        MeleeWeapon meleeWeapon = getEnum(rs, "melee_weapon", MeleeWeapon.class);
-        Weapon weapon = getEnum(rs, "weapon", Weapon.class);
-
-        SpaceMarine sm = new SpaceMarine();
-        sm.setId(id);
-        sm.setName(name);
-        sm.setCoordinates(coordinates);
-        sm.setCreationDate(creationDate);
-        sm.setHealth(health);
-        sm.setCategory(category);
-        sm.setWeaponType(weapon);
-        sm.setMeleeWeapon(meleeWeapon);
-        sm.setChapter(chapter);
-
-        return sm;
-    }
-    private void updateChapter(ResultSet chapterSet, Chapter chapter) throws SQLException {
-        chapterSet.updateString("name", chapter.getName());
-        chapterSet.updateInt("marines_count", chapter.getMarinesCount().intValue());
-        chapterSet.insertRow();
-    }
-    private void updateCoordinates(ResultSet coordinatesSet, Coordinates coordinates) throws SQLException {
-        coordinatesSet.updateInt("x", coordinates.getX());
-        coordinatesSet.updateInt("y", coordinates.getY());
-        coordinatesSet.insertRow();
-    }
-    private void updateSpaceMarine(ResultSet smSet, SpaceMarine sm, ResultSet chSet, ResultSet coorSet) throws SQLException {
-        java.util.Date utilDate = (java.util.Date) java.util.Date.from(sm.getCreationDate().toInstant());
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-
-        smSet.updateString("name", sm.getName());
-        smSet.updateInt("coordinates_id", coorSet.getInt("coordinates_id"));
-        smSet.updateInt("health", sm.getHealth());
-        smSet.updateDate("creation_date", sqlDate);
-        smSet.updateInt("astartes_category_id", sm.getCategory() == null ? 1 : sm.getCategory().ordinal());
-        smSet.updateInt("weapon_id", sm.getWeaponType() == null ? 1 : sm.getWeaponType().ordinal());
-        smSet.updateInt("melee_weapon_id", sm.getMeleeWeapon() == null ? 1 : sm.getMeleeWeapon().ordinal());
-        smSet.updateInt("chapter_id", chSet.getInt("chapter_id"));
-        smSet.updateString("created_by", username);
-        smSet.insertRow();
-    }
-    private int insertSpaceMarine(SpaceMarine sm) throws SQLException {
-        Statement chapterStm = getStm();
-        ResultSet chapterSet = chapterStm.executeQuery("SELECT *  FROM chapter");
-        chapterSet.moveToInsertRow();
-        updateChapter(chapterSet, sm.getChapter());
-        chapterStm.close();
-
-
-        Statement coordinatesStm = getStm();
-        ResultSet coordinatesSet = coordinatesStm.executeQuery("SELECT * FROM coordinates");
-        coordinatesSet.moveToInsertRow();
-        updateCoordinates(coordinatesSet, sm.getCoordinates());
-        coordinatesStm.close();
-
-        ResultSet coordinates_id = getStm().executeQuery("SELECT * FROM coordinates");
-        coordinates_id.last();
-        System.out.println(coordinates_id.getInt(1));
-
-        ResultSet chapter_id = getStm().executeQuery("SELECT * FROM chapter");
-        chapter_id.last();
-        System.out.println(chapter_id.getInt(1));
-
-        Statement smStm = getStm();
-        ResultSet smSet = smStm.executeQuery("SELECT * FROM space_marine");
-        smSet.moveToInsertRow();
-        updateSpaceMarine(smSet, sm, chapter_id, coordinates_id);
-
-        System.out.println(smSet.getInt("id"));
-        return smSet.getInt("id");
+        this.user = user;
     }
 }

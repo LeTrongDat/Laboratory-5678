@@ -1,12 +1,12 @@
 package com.company.shared.entity;
 
-import com.company.shared.annotations.FieldAnnotation;
+import com.company.shared.annotations.Field;
 
 import java.io.Serializable;
 
 public class User implements Serializable {
-    @FieldAnnotation(type = "String") private String username;
-    @FieldAnnotation(type = "String") private String password;
+    @Field(type = "String") private String username;
+    @Field(type = "String") private String password;
 
     public User(String username, String password) {
         this.username = username;

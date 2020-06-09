@@ -1,6 +1,6 @@
 package com.company.shared.entity;
 
-import com.company.shared.annotations.FieldAnnotation;
+import com.company.shared.annotations.Field;
 
 import java.io.Serializable;
 
@@ -10,11 +10,13 @@ import java.io.Serializable;
  * @author Le Trong Dat
  */
 public class Coordinates implements Serializable {
-    @FieldAnnotation(type="Integer", min_value = 0, max_value = 451) private Integer x; //Максимальное значение поля: 451
-    @FieldAnnotation(type="Integer", min_value = 0, max_value = 273) private Integer y; //Максимальное значение поля: 273
+    @Field(type="Integer", min_value = 0, max_value = 451) private Integer x; //Максимальное значение поля: 451
+
+    @Field(type="Integer", min_value = 0, max_value = 273) private Integer y; //Максимальное значение поля: 273
 
     public Coordinates(Integer x, Integer y) {
         this.x = x;
+
         this.y = y;
     }
 
@@ -36,8 +38,5 @@ public class Coordinates implements Serializable {
 
     public String toString() {
         return "(" + x + ", " + y + ")";
-    }
-    public String csv() {
-        return "\"(" + x + ", " + y + ")\"";
     }
 }

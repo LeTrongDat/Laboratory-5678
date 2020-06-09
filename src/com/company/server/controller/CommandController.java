@@ -13,30 +13,38 @@ import java.util.concurrent.BlockingQueue;
  * @author Le Trong Dat
  */
 public class CommandController implements Runnable {
-    private CommandFactoryImpl commandFactoryImpl = new CommandFactoryImpl();
-    private BlockingQueue<CommandData> commandQueue;
-    private BlockingQueue<String> messageQueue;
+    private CommandFactoryImpl commandFactoryImpl;
+
+    private final BlockingQueue<CommandData> commandQueue;
+
+    private final BlockingQueue<String> messageQueue;
+
+    {
+        commandFactoryImpl = new CommandFactoryImpl();
+    }
 
     public CommandController(BlockingQueue<CommandData> commandQueue, BlockingQueue<String> messageQueue) {
         this.commandQueue = commandQueue;
+
         this.messageQueue = messageQueue;
     }
 
     public void execute() throws InterruptedException, InvocationTargetException, IllegalAccessException {
-        Collector<String> messageCollector = new MessageCollector();
-        commandFactoryImpl.setMessageCollector(messageCollector);
+
+        Collector<String> responder = new MessageCollector();
+
+        commandFactoryImpl.setResponder(responder);
 
         commandFactoryImpl.processCommand(commandQueue.take());
-        String message = messageCollector.getCollection();
+
+        String message = responder.getCollection();
+
         messageQueue.put(message);
     }
 
     @Override
     public void run() {
-        try {
-            while (true) execute();
-        } catch (IllegalAccessException | InterruptedException | InvocationTargetException e) {
-
-        }
+        try { while (true) execute(); }
+        catch (Exception e) { e.printStackTrace(); }
     }
 }

@@ -2,22 +2,21 @@ package com.company.client.CommandsProcessor;
 
 import com.company.client.Communication.ClientConsoleInputProcessor;
 import com.company.client.Communication.ClientPrinter;
-import com.company.shared.annotations.FieldAnnotation;
+import com.company.shared.annotations.Field;
 import com.company.shared.entity.Chapter;
 import com.company.shared.entity.Coordinates;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class ClientCommandsHelper {
     public static <T extends Class<?>> Object getNewObject(T myClass, ClientConsoleInputProcessor inp, ClientPrinter queryClientPrinter) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         ArrayList<Object> arr = new ArrayList<>();
-        Field[] fields = myClass.getDeclaredFields();
+        java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
 
-        for(Field field: fields) {
+        for(java.lang.reflect.Field field: fields) {
             field.setAccessible(true);
-            FieldAnnotation fa = field.getDeclaredAnnotation(FieldAnnotation.class);
+            Field fa = field.getDeclaredAnnotation(Field.class);
             if (fa == null) continue;
             if (fa.ignore()) {
                 queryClientPrinter.print("print", field.getName() + " will be generated automatically");
