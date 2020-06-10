@@ -11,4 +11,5 @@ public interface SpaceMarineRepository extends Repository {
     int update(SpaceMarine sm) throws SQLException;
     int add(SpaceMarine sm) throws SQLException;
     void register(User user);
+    void removeById(int id) throws SQLException;
 }

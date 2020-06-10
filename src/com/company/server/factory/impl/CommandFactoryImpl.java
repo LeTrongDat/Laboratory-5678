@@ -64,9 +64,11 @@ public class CommandFactoryImpl implements CommandFactory {
             opt.get().invoke(this, new Object[]{commandData.getCommandArguments()});
         } catch (WrongCommandFormatException e) {
             this.responder.collect("Command does not exist. Please enter again. Type \"help\" to see the list of commands");
+
             e.printStackTrace();
         } catch (UnauthorizedUserException e) {
             this.responder.collect("The user is unauthorized. Please log in (by command log_in) or sign up (by command sign_up) new user.");
+
             e.printStackTrace();
         }
     }
@@ -148,6 +150,17 @@ public class CommandFactoryImpl implements CommandFactory {
     @Command(name = "remove_by_id", usage = "Remove an item from the collection by its id", param = 1)
     @Override
     public void removeById(Object... args) {
+        try {
+            this.repo.removeById((Integer) args[0]);
+        } catch (SQLException e) {
+            repo.handleSQLException(e);
+
+            this.responder.collect("There is no id satisfying. " +
+                    "Please use the command \"show\" to see the id of objects that you have.");
+
+            return;
+        }
+
         this.spaceMarines.removeIf(sm -> sm.getId().equals(args[0]));
 
         this.responder.collect( "Removed element.");

@@ -150,6 +150,12 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
         return rs.getInt("id");
     }
 
+    @Override
+    public void removeById(int id) throws SQLException {
+        String SQL = String.format("DELETE FROM space_marine WHERE id = %d", id);
+
+        con.createStatement().executeUpdate(SQL);
+    }
 
     @Override
     public void register(User user) {
