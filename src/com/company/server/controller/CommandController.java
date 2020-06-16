@@ -3,6 +3,7 @@ package com.company.server.controller;
 import com.company.server.factory.impl.CommandFactoryImpl;
 import com.company.server.io.Collector;
 import com.company.server.io.impl.MessageCollector;
+import com.company.server.observer.Observer;
 import com.company.shared.entity.CommandData;
 
 import java.lang.reflect.InvocationTargetException;

@@ -6,6 +6,7 @@ import com.company.server.dao.repo.impl.SpaceMarineRepositoryImpl;
 import com.company.server.factory.CommandFactory;
 import com.company.server.io.impl.Log;
 import com.company.server.io.Collector;
+import com.company.server.observer.Observer;
 import com.company.shared.entity.User;
 import com.company.shared.annotations.Command;
 import com.company.shared.exceptions.UnauthorizedUserException;
@@ -65,11 +66,11 @@ public class CommandFactoryImpl implements CommandFactory {
         } catch (WrongCommandFormatException e) {
             this.responder.collect("Command does not exist. Please enter again. Type \"help\" to see the list of commands");
 
-            e.printStackTrace();
+//            e.printStackTrace();
         } catch (UnauthorizedUserException e) {
             this.responder.collect("The user is unauthorized. Please log in (by command log_in) or sign up (by command sign_up) new user.");
 
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -80,7 +81,7 @@ public class CommandFactoryImpl implements CommandFactory {
         Arrays.stream(CommandFactoryImpl.class.getDeclaredMethods())
                 .map(x -> x.getDeclaredAnnotation(Command.class))
                 .filter(Objects::nonNull)
-                .map(x -> String.format("%-35s - %-50s", x.name(), x.usage()))
+                .map(x -> String.format("%-50s - %s", x.name(), x.usage()))
                 .forEach(x -> this.responder.collect(x));
     }
 
@@ -89,6 +90,7 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public void getGeneralInformation(Object... args) {
         this.responder.collect( "Type of collection: Priority Queue");
+
         this.responder.collect( "Size of collection: " + spaceMarines.size());
     }
 
@@ -96,7 +98,7 @@ public class CommandFactoryImpl implements CommandFactory {
             "in a string representation")
     @Override
     public void getDetailsInformation(Object... args) {
-        this.responder.collect(Arrays.toString(spaceMarines.toArray()));
+        this.responder.collect(Arrays.toString(spaceMarines.toArray()).replaceAll("[\\[\\]]", ""));
     }
 
     @Command(name = "helper_method", usage = "Load object from database to collection.")
@@ -112,13 +114,18 @@ public class CommandFactoryImpl implements CommandFactory {
 
         try {
             spaceMarine.setId(repo.add(spaceMarine));
+
+            this.spaceMarines.add(spaceMarine);
+
+            this.responder.collect( "New Space Marine has been added");
+
+            this.showAll();
         } catch (SQLException e) {
             this.repo.handleSQLException(e);
         }
 
-        this.spaceMarines.add(spaceMarine);
 
-        this.responder.collect( "New Space Marine has been added");
+
     }
 
     @Command(name = "update", usage = "Update the value of a collection element whose id is equal to the specified", param = 2)
@@ -145,6 +152,7 @@ public class CommandFactoryImpl implements CommandFactory {
         } catch (SQLException e) {
             this.repo.handleSQLException(e);
         }
+        this.showAll();
     }
 
     @Command(name = "remove_by_id", usage = "Remove an item from the collection by its id", param = 1)
@@ -152,26 +160,33 @@ public class CommandFactoryImpl implements CommandFactory {
     public void removeById(Object... args) {
         try {
             this.repo.removeById((Integer) args[0]);
+
+
+            this.spaceMarines.removeIf(sm -> sm.getId().equals(args[0]));
+
+            this.responder.collect( "Removed element.");
         } catch (SQLException e) {
             repo.handleSQLException(e);
 
             this.responder.collect("There is no id satisfying. " +
                     "Please use the command \"show\" to see the id of objects that you have.");
-
-            return;
         }
 
-        this.spaceMarines.removeIf(sm -> sm.getId().equals(args[0]));
-
-        this.responder.collect( "Removed element.");
+        this.showAll();
     }
 
     @Command(name = "clear", usage = "Clear collection")
     @Override
     public void clear(Object... args) {
-        this.spaceMarines.clear();
 
-        this.responder.collect( "Cleared collection");
+        try {
+            this.spaceMarines.clear();
+            this.repo.removeAll();
+            this.responder.collect( "Cleared collection");
+            this.showAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Command(name = "save", usage = "Save collection to file")
@@ -207,6 +222,7 @@ public class CommandFactoryImpl implements CommandFactory {
         } else {
             this.responder.collect( "New object is not greater than the current maximum object in the collection");
         }
+        this.showAll();
     }
 
     @Command(name = "add_if_min", usage = "Add a new element to the collection if its value is less " +
@@ -222,6 +238,7 @@ public class CommandFactoryImpl implements CommandFactory {
         } else {
             this.responder.collect( "New object is not less then the current minimum object in the collection");
         }
+        this.showAll();
     }
 
     @Command(name = "history", usage = "Print the last 6 commands (without their arguments)")
@@ -234,9 +251,10 @@ public class CommandFactoryImpl implements CommandFactory {
             "category field value is equivalent to the specified", param = 1)
     @Override
     public void removeByCategory(Object... args) {
-        this.spaceMarines.removeIf(x -> x.getCategory().equals(AstartesCategory.valueOf((String)args[0])));
+        this.spaceMarines.removeIf(x -> x.getCategory() != null && x.getCategory().equals(AstartesCategory.valueOf((String)args[0])));
 
         this.responder.collect( "Removed items whose category field value is equal to the specified");
+        this.showAll();
     }
 
     @Command(name = "count_greater_than_category", usage = "Display the number of elements whose category " +
@@ -278,7 +296,6 @@ public class CommandFactoryImpl implements CommandFactory {
     @Override
     public void logIn(Object... args) {
         User user = (User) args[0];
-
         try {
             this.responder.collect(UserController.logIn(user)
                     ? "Logged in successfully."
@@ -289,6 +306,8 @@ public class CommandFactoryImpl implements CommandFactory {
             this.repo.register(user);
 
             this.repo.loadDatabase(this);
+
+            showAll();
         } catch (SQLException e) { this.repo.handleSQLException(e); }
     }
 
@@ -300,6 +319,18 @@ public class CommandFactoryImpl implements CommandFactory {
         init();
 
         this.responder.collect("The user has logged out of the server.");
+    }
+
+    @Command(name = "show_all", usage = "Show all objects of all users")
+    @Override
+    public void showAll(Object... args) {
+        try {
+            Observer.inform(Arrays.toString(this.repo.getAll().toArray()));
+        } catch (SQLException e) {
+            repo.handleSQLException(e);
+        } catch (InterruptedException e) {
+
+        }
     }
 
 

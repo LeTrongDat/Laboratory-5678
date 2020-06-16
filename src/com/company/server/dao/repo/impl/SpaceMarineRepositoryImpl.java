@@ -6,6 +6,8 @@ import com.company.shared.entity.*;
 
 import java.sql.*;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
@@ -152,13 +154,59 @@ public class SpaceMarineRepositoryImpl implements SpaceMarineRepository {
 
     @Override
     public void removeById(int id) throws SQLException {
-        String SQL = String.format("DELETE FROM space_marine WHERE id = %d", id);
+        String SQL = String.format("SELECT * FROM space_marine WHERE id = %d AND created_by = '%s'", id, user.getUsername());
+        ResultSet rs = con.createStatement().executeQuery(SQL);
+        if (!rs.next()) throw new SQLException();
 
+        SQL = String.format("DELETE FROM space_marine WHERE id = %d AND created_by = '%s'", id, user.getUsername());
         con.createStatement().executeUpdate(SQL);
     }
 
     @Override
     public void register(User user) {
         this.user = user;
+    }
+
+    @Override
+    public List<SpaceMarine> getAll() throws SQLException {
+        List<SpaceMarine> spaceMarines = new ArrayList<>();
+        String SQL = String.format("SELECT * FROM space_marine");
+
+        ResultSet rs = con.createStatement().executeQuery(SQL);
+
+        while (rs.next()) {
+
+            SpaceMarine sm = new SpaceMarine();
+
+            sm.setId(rs.getInt("id"));
+
+            sm.setName(rs.getString("name"));
+
+            sm.setCoordinates(coordinatesRepo.findById(rs.getInt("coordinates_id")));
+
+            sm.setCreationDate(rs.getDate("creation_date").toLocalDate().atStartOfDay(ZoneId.of("UTC+7")));
+
+            sm.setHealth(rs.getInt("health"));
+
+            sm.setCategory(astartesCategoryRepo.findById(rs.getInt("astartes_category_id")));
+
+            sm.setMeleeWeapon(meleeWeaponRepo.findById(rs.getInt("melee_weapon_id")));
+
+            sm.setWeaponType(weaponRepo.findById(rs.getInt("weapon_id")));
+
+            sm.setChapter(chapterRepo.findById(rs.getInt("chapter_id")));
+
+            sm.setCreatedBy(rs.getString("created_by"));
+
+            spaceMarines.add(sm);
+        }
+        return spaceMarines;
+    }
+
+    @Override
+    public void removeAll() throws SQLException {
+        String SQL = String.format("TRUNCATE space_marine");
+
+        con.createStatement().executeUpdate(SQL);
     }
 }

@@ -3,7 +3,10 @@ package com.company.server.dao.repo.impl;
 import com.company.server.dao.repo.ChapterRepository;
 import com.company.shared.entity.Chapter;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ChapterRepositoryImpl implements ChapterRepository {
     private Connection con;
@@ -14,7 +17,7 @@ public class ChapterRepositoryImpl implements ChapterRepository {
 
     @Override
     public int add(Chapter chapter) throws SQLException {
-        String SQL  = "INSERT INTO chapter(name, marines_count) VALUES(?, ?) RETURNING chapter_id";
+        String SQL = "INSERT INTO chapter(name, marines_count) VALUES(?, ?) RETURNING chapter_id";
 
         PreparedStatement pst = con.prepareStatement(SQL);
 

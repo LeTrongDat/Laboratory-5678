@@ -1,6 +1,7 @@
 package com.company.server.io.impl;
 
 import com.company.server.io.Sendable;
+import com.company.server.observer.Observer;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,7 +21,9 @@ public class SocketSender implements Runnable, Sendable<String> {
     public void run() {
         try {
             while (true) send(messageQueue.take());
-        } catch (InterruptedException | IOException e) { }
+        } catch (InterruptedException | IOException e) {
+            Observer.unsubscribe(messageQueue);
+        }
     }
 
     @Override

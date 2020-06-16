@@ -3,7 +3,10 @@ package com.company.server.dao.repo.impl;
 import com.company.server.dao.repo.CoordinatesRepository;
 import com.company.shared.entity.Coordinates;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CoordinatesRepositoryImpl implements CoordinatesRepository {
     private Connection con;

@@ -146,4 +146,9 @@ public interface CommandFactory {
      * @param sm
      */
     void add(SpaceMarine sm);
+
+    /**
+     * Show all objects of all users
+     */
+    void showAll(Object... args);
 }

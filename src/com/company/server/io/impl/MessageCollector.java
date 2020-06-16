@@ -13,7 +13,7 @@ public class MessageCollector implements Collector<String> {
 
     @Override
     public void collect(String... items) {
-        message += Arrays.toString(items).replaceAll("[\\[\\]]", "") + "\n> ";
+        message += Arrays.toString(items).replaceAll("[\\[\\]]", "") + "\n";
     }
 
     @Override

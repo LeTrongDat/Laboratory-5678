@@ -1,7 +1,7 @@
 package com.company.server.factory.impl;
 
-import com.company.server.io.impl.Log;
 import com.company.server.factory.SocketFactory;
+import com.company.server.io.impl.Log;
 import com.company.server.thread.SocketSession;
 
 import java.io.IOException;

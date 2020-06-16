@@ -4,11 +4,13 @@ import com.company.server.controller.CommandController;
 import com.company.server.factory.impl.SocketFactoryImpl;
 import com.company.server.io.impl.SocketReader;
 import com.company.server.io.impl.SocketSender;
+import com.company.server.observer.Observer;
 import com.company.shared.entity.CommandData;
 
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SocketSession implements Runnable {
     private Socket socket;
@@ -24,6 +26,8 @@ public class SocketSession implements Runnable {
         BlockingQueue<String> messageQueue = new SynchronousQueue<>();
 
         SocketFactoryImpl.cachedThreadPool.submit(new SocketReader(socket, commandQueue));
+
+        Observer.subscribe(messageQueue);
 
         SocketFactoryImpl.fixedThreadPool.submit(new CommandController(commandQueue, messageQueue));
 

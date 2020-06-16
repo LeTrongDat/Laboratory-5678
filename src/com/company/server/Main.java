@@ -3,6 +3,7 @@ package com.company.server;
 import com.company.server.factory.impl.SocketFactoryImpl;
 import com.company.server.io.impl.Log;
 import com.company.server.thread.Worker;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,9 +11,9 @@ import java.net.ServerSocket;
 /**
  * @author Le Trong Dat
  */
-public class Main  {
+public class Main {
     public static void main(String... args) {
-        new  Thread(new Worker()).start();
+        new Thread(new Worker()).start();
 
         try {
             int port = args.length < 1 ? 1270 : Integer.parseInt(args[0]);
